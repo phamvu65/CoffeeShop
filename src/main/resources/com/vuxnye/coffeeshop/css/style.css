@@ -1,0 +1,364 @@
+/* =========================================
+   GLOBAL & LAYOUT
+   ========================================= */
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #F8FAFC; /* Màu nền xám xanh rất nhạt hiện đại */
+}
+
+/* Scroll bar đẹp hơn (Mỏng và bo tròn) */
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+.scroll-bar:vertical .thumb, .scroll-bar:horizontal .thumb {
+    -fx-background-color: #CBD5E1;
+    -fx-background-radius: 5;
+}
+
+/* =========================================
+   LOGIN SCREEN COMPONENTS
+   ========================================= */
+.main-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 20, 0, 0, 5);
+    -fx-padding: 40;
+}
+
+.logo-container {
+    -fx-background-color: #4A90E2;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 144, 226, 0.3), 10, 0, 0, 3);
+}
+
+.input-group {
+    -fx-background-color: #F1F5F9; /* slate-100 */
+    -fx-background-radius: 10;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-padding: 0 15 0 15;
+}
+
+.input-group-focused {
+    -fx-background-color: white;
+    -fx-border-color: #4A90E2;
+    -fx-effect: dropshadow(gaussian, rgba(74, 144, 226, 0.1), 5, 0, 0, 1);
+}
+
+.text-input {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+    -fx-text-fill: #334155;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #94A3B8;
+}
+.text-input:focused {
+    -fx-background-color: transparent;
+}
+
+.label-field {
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #94A3B8;
+}
+
+/* =========================================
+   BUTTON STYLES
+   ========================================= */
+.btn-primary {
+    -fx-background-color: #4A90E2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-padding: 12 20;
+}
+.btn-primary:hover { -fx-background-color: #357ABD; }
+.btn-primary:pressed { -fx-translate-y: 1; }
+
+.btn-secondary {
+    -fx-background-color: #FFADAD; /* Hồng Pastel */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-padding: 12 20;
+}
+.btn-secondary:hover { -fx-background-color: #ff9090; }
+
+.btn-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4A90E2;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+}
+.btn-link:hover { -fx-underline: true; }
+
+.btn-back {
+    -fx-background-color: transparent;
+    -fx-text-fill: #64748B;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+
+/* =========================================
+   POS LAYOUT (SIDEBAR & MAIN)
+   ========================================= */
+.sidebar {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 0);
+}
+
+.logo-text {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E293B;
+}
+
+.menu-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #64748B;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 10 20;
+}
+
+.menu-btn:hover {
+    -fx-background-color: #F1F5F9;
+    -fx-text-fill: #4A90E2;
+}
+
+.menu-btn-active {
+    -fx-background-color: #EFF6FF;
+    -fx-text-fill: #4A90E2;
+    -fx-border-color: transparent transparent transparent #4A90E2;
+    -fx-border-width: 0 0 0 4;
+}
+
+.search-bar {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 5, 0, 0, 2);
+}
+
+.search-field {
+    -fx-background-color: transparent;
+    -fx-prompt-text-fill: #94A3B8;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #334155;
+}
+
+.filter-combo {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 5, 0, 0, 2);
+}
+
+/* =========================================
+   PRODUCT CARDS & CART
+   ========================================= */
+.product-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 3);
+    -fx-cursor: hand;
+}
+.product-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(74,144,226,0.2), 15, 0, 0, 5);
+    -fx-translate-y: -3;
+}
+
+.cart-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 20 0 0 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), -5, 0, 0, 0);
+}
+
+.cart-table {
+    -fx-background-color: transparent;
+}
+.cart-table .column-header-background {
+    -fx-background-color: transparent;
+}
+.cart-table .table-cell {
+    -fx-border-color: transparent;
+    -fx-padding: 8;
+    -fx-alignment: CENTER-LEFT;
+}
+
+.lbl-total-price {
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #4A90E2;
+}
+
+/* Nút thanh toán */
+.btn-checkout {
+    -fx-background-color: #FF9F9F;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+.btn-checkout:hover {
+    -fx-background-color: #FF8080;
+}
+
+/* =========================================
+   CHECKOUT MODAL (NEW)
+   ========================================= */
+.input-field {
+    -fx-background-color: #F8FAFC;
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+    -fx-font-weight: bold;
+    -fx-text-fill: #334155;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 10;
+}
+.input-field:focused {
+    -fx-border-color: #4A90E2;
+    -fx-background-color: white;
+}
+
+.label-mini {
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #94A3B8;
+    -fx-padding: 0 0 2 2;
+}
+
+.btn-blue-sm {
+    -fx-background-color: #3B82F6;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+    -fx-padding: 8 15;
+}
+.btn-blue-sm:hover { -fx-background-color: #2563EB; }
+
+.btn-payment {
+    -fx-background-color: white;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 15;
+    -fx-border-width: 2;
+    -fx-cursor: hand;
+}
+.btn-payment:hover {
+    -fx-border-color: #3B82F6;
+    -fx-background-color: #EFF6FF;
+    -fx-effect: dropshadow(three-pass-box, rgba(59, 130, 246, 0.2), 10, 0, 0, 2);
+}
+
+/* =========================================
+   MENU TABLE (Dùng cho trang Quản lý Menu)
+   ========================================= */
+.custom-table {
+    -fx-background-color: transparent;
+}
+.custom-table .column-header-background {
+    -fx-background-color: #F8FAFC;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #E2E8F0;
+    -fx-padding: 5 0;
+}
+.custom-table .column-header .label {
+    -fx-text-fill: #94A3B8;
+    -fx-font-weight: 900;
+    -fx-font-size: 11px;
+    -fx-alignment: CENTER-LEFT;
+}
+.custom-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #F1F5F9 transparent;
+    -fx-border-width: 1;
+}
+.custom-table .table-row-cell:hover {
+    -fx-background-color: #F8FAFC;
+}
+.custom-table .table-cell {
+    -fx-text-fill: #334155;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER-LEFT;
+    -fx-padding: 10;
+}
+
+/* Icon Colors */
+.icon-gray { -fx-fill: #94A3B8; }
+.icon-white { -fx-fill: white; }
+
+/* --- TABLE MANAGEMENT --- */
+
+/* Nút lọc */
+.btn-filter {
+    -fx-background-color: transparent;
+    -fx-text-fill: #94A3B8;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+    -fx-background-radius: 10;
+    -fx-padding: 8 15;
+}
+
+.btn-filter:hover {
+    -fx-text-fill: #475569;
+}
+
+.btn-filter-active {
+    -fx-background-color: #4A90E2;
+    -fx-text-fill: white !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 144, 226, 0.3), 10, 0, 0, 3);
+}
+
+/* --- TABLE MANAGEMENT --- */
+
+.table-card {
+    -fx-background-color: white; /* Mặc định là Trống (Trắng) */
+    -fx-background-radius: 25;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 3);
+    -fx-cursor: hand;
+    -fx-padding: 0; /* Xóa padding để full màu */
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1;
+    -fx-border-radius: 25;
+}
+
+.table-card:hover {
+    -fx-translate-y: -5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 15, 0, 0, 5);
+}
+
+/* TRẠNG THÁI ĐANG DÙNG (MÀU CAM TOÀN BỘ) */
+.table-serving {
+    -fx-background-color: #FFEDD5; /* Cam pastel đậm hơn chút cho rõ */
+    -fx-border-color: #FDBA74;
+}
+
+/* Icon box bên trong card */
+.table-icon-box {
+    -fx-background-color: #F8FAFC;
+    -fx-background-radius: 20;
+}
+
+/* Khi serving thì icon box đổi màu cho hợp nền cam */
+.table-serving .table-icon-box {
+    -fx-background-color: #FFF7ED; /* Cam rất nhạt */
+}

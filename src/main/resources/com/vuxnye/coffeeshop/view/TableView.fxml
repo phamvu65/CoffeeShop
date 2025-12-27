@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane prefHeight="800.0" prefWidth="1040.0" styleClass="root" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vuxnye.coffeeshop.controller.TableController">
+
+    <top>
+        <VBox spacing="20.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="10.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                    <children>
+                        <VBox>
+                            <children>
+                                <Label style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: #1e293b;" text="Quản lý sơ đồ bàn" />
+                                <Label style="-fx-text-fill: #94A3B8; -fx-font-weight: bold; -fx-font-size: 13px;" text="Cập nhật nhanh trạng thái chỗ ngồi khách hàng" />
+                            </children>
+                        </VBox>
+                        <Pane HBox.hgrow="ALWAYS" />
+
+                        <HBox alignment="CENTER" spacing="5.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+                            <children>
+                                <Button fx:id="btnAll" onAction="#filterAll" styleClass="btn-filter, btn-filter-active" text="Tất cả" />
+                                <Button fx:id="btnEmpty" onAction="#filterEmpty" styleClass="btn-filter" text="Bàn trống" />
+                                <Button fx:id="btnServing" onAction="#filterServing" styleClass="btn-filter" text="Đang dùng" />
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="20.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="10.0" />
+            </padding>
+            <children>
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent;" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
+                    <content>
+                        <FlowPane fx:id="flowTables" hgap="25.0" vgap="25.0" style="-fx-padding: 10;">
+                        </FlowPane>
+                    </content>
+                </ScrollPane>
+
+                <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-background-color: #ecfdf5; -fx-background-radius: 20; -fx-padding: 20; -fx-border-color: #a7f3d0; -fx-border-radius: 20;">
+                    <children>
+                        <VBox alignment="CENTER" style="-fx-background-color: #10b981; -fx-background-radius: 15; -fx-min-width: 50; -fx-min-height: 50;">
+                            <SVGPath content="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="WHITE" scaleX="1.2" scaleY="1.2"/>
+                        </VBox>
+                        <VBox>
+                            <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #064e3b;" text="Hướng dẫn quản lý bàn" />
+                            <Label style="-fx-text-fill: #64748B; -fx-font-weight: bold; -fx-font-size: 12px;" text="Bạn có thể nhấn trực tiếp vào bàn để xoay vòng trạng thái. Màu sắc giúp nhân viên nhận diện bàn trống nhanh hơn." />
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<VBox prefHeight="800.0" prefWidth="240.0" spacing="10.0" styleClass="sidebar" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vuxnye.coffeeshop.controller.SidebarController">
+    <children>
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <padding>
+                <Insets bottom="20.0" left="25.0" right="20.0" top="30.0" />
+            </padding>
+            <children>
+                <Pane style="-fx-background-color: #4A90E2; -fx-background-radius: 10; -fx-min-width: 35; -fx-min-height: 35;">
+                    <children>
+                        <SVGPath content="M18.5,4h-13C4.1,4,3,5.1,3,6.5v9C3,16.9,4.1,18,5.5,18h13c1.4,0,2.5-1.1,2.5-2.5v-9C21,5.1,19.9,4,18.5,4z" fill="WHITE" layoutX="5" layoutY="5" scaleX="0.8" scaleY="0.8"/>
+                    </children>
+                </Pane>
+                <Label styleClass="logo-text" text="BaristaFlow" />
+            </children>
+        </HBox>
+
+        <Button fx:id="btnDashboard" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Tổng quan">
+            <graphic>
+                <SVGPath content="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" style="-fx-fill: #94A3B8;" />
+            </graphic>
+        </Button>
+
+        <Button fx:id="btnPOS" onAction="#handlePOS" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Bán hàng (POS)">
+            <graphic>
+                <SVGPath content="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z" style="-fx-fill: #94A3B8;" />
+            </graphic>
+        </Button>
+
+        <Button fx:id="btnTable" onAction="#handleTable" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Quản lý bàn">
+            <graphic>
+                <SVGPath content="M4 6h16v12H4z" style="-fx-fill: #94A3B8;" scaleX="0.8" scaleY="0.8"/>
+            </graphic>
+        </Button>
+
+        <Button fx:id="btnMenu" onAction="#handleMenu" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Thực đơn">
+            <graphic>
+                <SVGPath content="M8 6h8v2H8z" style="-fx-fill: #94A3B8;" />
+            </graphic>
+        </Button>
+
+        <Pane VBox.vgrow="ALWAYS" />
+
+        <VBox spacing="5.0">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" />
+            </padding>
+            <children>
+                <Separator />
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <children>
+                        <Pane style="-fx-background-color: #E2E8F0; -fx-background-radius: 50; -fx-min-width: 30; -fx-min-height: 30;">
+                            <children>
+                                <Label layoutX="10.0" layoutY="6.0" style="-fx-font-weight: bold; -fx-text-fill: #64748B;" text="A" />
+                            </children>
+                        </Pane>
+                        <VBox>
+                            <Label fx:id="lblUser" style="-fx-font-weight: bold; -fx-font-size: 13px;" text="Admin" />
+                            <Label onMouseClicked="#handleLogout" style="-fx-text-fill: #EF4444; -fx-font-size: 11px; -fx-cursor: hand;" text="Đăng xuất" />
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</VBox>
