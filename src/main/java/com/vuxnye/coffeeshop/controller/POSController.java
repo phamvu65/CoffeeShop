@@ -31,18 +31,18 @@ public class POSController {
     @FXML private TextField txtSearch;
     @FXML private GridPane gridProducts;
 
-    // --- ComboBox ---
+    // --- BỘ LỌC & CHỌN BÀN ---
     @FXML private ComboBox<Category> cbCategory;
-    @FXML private ComboBox<Table> cbOrderType; // Kiểu Table
+    @FXML private ComboBox<Table> cbOrderType; // Dùng Object Table
 
-    // --- TableView Cart ---
+    // --- TABLE VIEW GIỎ HÀNG ---
     @FXML private TableView<CartItem> tblCart;
     @FXML private TableColumn<CartItem, String> colName;
     @FXML private TableColumn<CartItem, Void> colQty;
     @FXML private TableColumn<CartItem, Double> colPrice;
     @FXML private TableColumn<CartItem, Void> colDelete;
 
-    // --- Labels ---
+    // --- LABELS TỔNG TIỀN ---
     @FXML private Label lblSubtotal, lblTax, lblTotal, lblUser;
 
     // --- DAOs ---
@@ -51,18 +51,22 @@ public class POSController {
     private ReceiptDAO receiptDAO = new ReceiptDAO();
     private TableDAO tableDAO = new TableDAO();
 
-    // --- Data ---
+    // --- DATA ---
     private ObservableList<CartItem> cartList = FXCollections.observableArrayList();
     private User currentUser;
+
     private int currentCategoryId = 0;
     private String currentKeyword = "";
 
     @FXML
     public void initialize() {
         setupTable();
+
         loadCategories();
         loadTables(); // Load bàn từ DB
-        loadProducts();
+
+        loadProducts(); // Load sản phẩm
+
         calculateTotals();
 
         // Sự kiện tìm kiếm
@@ -71,7 +75,7 @@ public class POSController {
             loadProducts();
         });
 
-        // Sự kiện lọc danh mục
+        // Sự kiện chọn danh mục
         cbCategory.setOnAction(e -> {
             Category selected = cbCategory.getValue();
             currentCategoryId = (selected != null) ? selected.getId() : 0;
@@ -79,30 +83,57 @@ public class POSController {
         });
     }
 
-    // --- LOAD BÀN TỪ DATABASE ---
+    // --- LOAD DỮ LIỆU ---
+
+    private void loadCategories() {
+        List<Category> list = categoryDAO.getAllCategories();
+        list.add(0, new Category(0, "Tất cả"));
+        cbCategory.setItems(FXCollections.observableArrayList(list));
+        cbCategory.getSelectionModel().selectFirst();
+    }
+
     private void loadTables() {
         List<Table> tables = tableDAO.getAllTables();
 
-        // Thêm mục "Mang về" (ID = 0)
+        // Thêm option "Mang về" (ID = 0)
         Table takeAway = new Table(0, "Mang về", "EMPTY");
         tables.add(0, takeAway);
 
         cbOrderType.setItems(FXCollections.observableArrayList(tables));
         cbOrderType.getSelectionModel().selectFirst();
 
-        // Custom hiển thị tên trong ComboBox
+        // Custom hiển thị tên bàn trong ComboBox
         cbOrderType.setConverter(new StringConverter<Table>() {
             @Override
             public String toString(Table t) {
                 if (t == null) return null;
-                if (t.getId() == 0) return t.getName();
-                // Hiển thị: "Bàn 1" hoặc "Bàn 2 (Đang dùng)"
+                if (t.getId() == 0) return t.getName(); // Mang về
+                // Hiển thị tên bàn + trạng thái
                 return t.getName() + (t.getStatus().equals("SERVING") ? " (Đang dùng)" : "");
             }
 
             @Override
             public Table fromString(String string) { return null; }
         });
+    }
+
+    private void loadProducts() {
+        gridProducts.getChildren().clear();
+
+        // QUAN TRỌNG: Gọi tham số 'true' để CHỈ HIỆN MÓN ĐANG BÁN
+        List<Product> products = productDAO.searchProducts(currentKeyword, currentCategoryId, true);
+
+        int column = 0;
+        int row = 1;
+
+        for (Product p : products) {
+            VBox card = createProductCard(p);
+            gridProducts.add(card, column++, row);
+            if (column == 4) {
+                column = 0;
+                row++;
+            }
+        }
     }
 
     // --- CẤU HÌNH BẢNG GIỎ HÀNG ---
@@ -117,7 +148,7 @@ public class POSController {
             }
         });
 
-        // Cột số lượng (+ / -)
+        // Cột số lượng (+/-)
         colQty.setCellFactory(param -> new TableCell<>() {
             private final Button btnMinus = new Button("-");
             private final Button btnPlus = new Button("+");
@@ -129,6 +160,7 @@ public class POSController {
                 btnMinus.setStyle(btnStyle);
                 btnPlus.setStyle(btnStyle);
                 lblQty.setStyle("-fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-min-width: 20px; -fx-alignment: center;");
+
                 btnMinus.setOnAction(e -> updateQuantity(getTableView().getItems().get(getIndex()), -1));
                 btnPlus.setOnAction(e -> updateQuantity(getTableView().getItems().get(getIndex()), 1));
             }
@@ -160,6 +192,7 @@ public class POSController {
                 setGraphic(empty ? null : btnDelete);
             }
         });
+
         tblCart.setItems(cartList);
     }
 
@@ -174,124 +207,62 @@ public class POSController {
     private void calculateTotals() {
         double subtotal = 0;
         for (CartItem item : cartList) subtotal += item.getTotal();
+
         double tax = subtotal * 0.1;
         double total = subtotal + tax;
+
         if (lblSubtotal != null) lblSubtotal.setText(String.format("%,.0f đ", subtotal));
         if (lblTax != null) lblTax.setText(String.format("%,.0f đ", tax));
         if (lblTotal != null) lblTotal.setText(String.format("%,.0f đ", total));
     }
 
-    // --- THANH TOÁN ---
-    @FXML
-    public void handleOpenCheckout() {
-        if (cartList.isEmpty()) {
-            showAlert("Giỏ hàng trống", "Vui lòng chọn món trước khi thanh toán!");
-            return;
-        }
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vuxnye/coffeeshop/view/Checkout.fxml"));
-            Parent root = loader.load();
-            double subtotal = cartList.stream().mapToDouble(CartItem::getTotal).sum();
-
-            CheckoutController controller = loader.getController();
-            controller.setOrderData(subtotal, this);
-
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(javafx.stage.StageStyle.TRANSPARENT);
-            Scene scene = new Scene(root);
-            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) { e.printStackTrace(); }
+    public void setSession(User user) {
+        this.currentUser = user;
+        if (user != null) lblUser.setText(user.getFullname() != null ? user.getFullname() : user.getUsername());
     }
 
-    // --- CALLBACK SAU KHI THANH TOÁN ---
-    public void onCheckoutCompleted(String method, Customer customer, double discount, double finalTotal) {
-        double subtotal = cartList.stream().mapToDouble(CartItem::getTotal).sum();
-        String dbMethod = method.equals("TIỀN MẶT") ? "CASH" : "TRANSFER";
-
-        // Lấy bàn đang chọn
-        Table selectedTable = cbOrderType.getValue();
-
-        // 1. Tạo hóa đơn
-        boolean success = receiptDAO.createReceipt(cartList, subtotal, discount, finalTotal, dbMethod, customer, currentUser);
-
-        if (success) {
-            // 2. Cập nhật trạng thái bàn (Nếu không phải Mang về và đang Trống)
-            if (selectedTable != null && selectedTable.getId() > 0) {
-                // Nếu bàn đang EMPTY -> Chuyển sang SERVING
-                if ("EMPTY".equals(selectedTable.getStatus())) {
-                    tableDAO.updateStatus(selectedTable.getId(), "SERVING");
-
-                    // Reload lại ComboBox để cập nhật chữ "(Đang dùng)"
-                    loadTables();
-
-                    // Restore lại đúng cái bàn vừa chọn (để nhân viên không bị nhảy selection)
-                    for(Table t : cbOrderType.getItems()) {
-                        if(t.getId() == selectedTable.getId()) {
-                            cbOrderType.getSelectionModel().select(t);
-                            break;
-                        }
-                    }
-                }
-                // Nếu đã SERVING thì không làm gì (giữ nguyên trạng thái)
-            }
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thành công");
-            alert.setHeaderText("Thanh toán thành công!");
-            String tableName = (selectedTable.getId() == 0) ? "Mang về" : selectedTable.getName();
-            alert.setContentText("Đơn hàng: " + tableName + "\nThực thu: " + String.format("%,.0f đ", finalTotal));
-            alert.showAndWait();
-
-            cartList.clear();
-            calculateTotals();
-        } else {
-            showAlert("Lỗi", "Có lỗi xảy ra khi lưu hóa đơn.");
-        }
-    }
-
-    // --- CÁC HÀM PHỤ TRỢ ---
-    private void loadCategories() {
-        List<Category> list = categoryDAO.getAllCategories();
-        list.add(0, new Category(0, "Tất cả"));
-        cbCategory.setItems(FXCollections.observableArrayList(list));
-        cbCategory.getSelectionModel().selectFirst();
-    }
-
-    private void loadProducts() {
-        gridProducts.getChildren().clear();
-        List<Product> products = productDAO.searchProducts(currentKeyword, currentCategoryId);
-        int column = 0;
-        int row = 1;
-        for (Product p : products) {
-            VBox card = createProductCard(p);
-            gridProducts.add(card, column++, row);
-            if (column == 4) { column = 0; row++; }
-        }
-    }
-
+    // --- UI THẺ SẢN PHẨM ---
     private VBox createProductCard(Product p) {
         VBox card = new VBox();
         card.setAlignment(Pos.CENTER);
         card.setSpacing(10);
         card.getStyleClass().add("product-card");
         card.setPrefWidth(220);
+
         ImageView img = new ImageView();
         try {
-            String path = p.getImagePath() != null ? "/images/" + p.getImagePath() : "/images/cafe-den.png";
-            img.setImage(new Image(getClass().getResourceAsStream(path)));
-        } catch (Exception e) { }
+            String path = p.getImagePath();
+            Image image;
+            // Load ảnh thông minh (Online hoặc Local)
+            if (path != null && path.startsWith("http")) {
+                image = new Image(path, true);
+            } else if (path != null && !path.isEmpty()) {
+                String resourcePath = "/images/" + path;
+                if (getClass().getResource(resourcePath) != null) {
+                    image = new Image(getClass().getResourceAsStream(resourcePath));
+                } else {
+                    image = new Image(getClass().getResourceAsStream("/images/cafe-den.png"));
+                }
+            } else {
+                image = new Image(getClass().getResourceAsStream("/images/cafe-den.png"));
+            }
+            img.setImage(image);
+        } catch (Exception e) {
+            // Fallback nếu lỗi
+        }
+
         img.setFitHeight(140);
         img.setFitWidth(180);
         img.setPreserveRatio(true);
+
         Label name = new Label(p.getName());
         name.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #1e293b;");
         name.setWrapText(true);
         name.setAlignment(Pos.CENTER);
+
         Label price = new Label(String.format("%,.0f đ", p.getPrice()));
         price.setStyle("-fx-text-fill: #4A90E2; -fx-font-weight: bold; -fx-font-size: 14px;");
+
         card.getChildren().addAll(img, name, price);
         card.setOnMouseClicked(e -> addToCart(p));
         return card;
@@ -308,6 +279,72 @@ public class POSController {
         calculateTotals();
     }
 
+    // --- THANH TOÁN ---
+    @FXML
+    public void handleOpenCheckout() {
+        if (cartList.isEmpty()) {
+            showAlert("Giỏ hàng trống", "Vui lòng chọn món trước khi thanh toán!");
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vuxnye/coffeeshop/view/Checkout.fxml"));
+            Parent root = loader.load();
+
+            double subtotal = cartList.stream().mapToDouble(CartItem::getTotal).sum();
+
+            CheckoutController controller = loader.getController();
+            controller.setOrderData(subtotal, this);
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(javafx.stage.StageStyle.TRANSPARENT);
+
+            Scene scene = new Scene(root);
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    public void onCheckoutCompleted(String method, Customer customer, double discount, double finalTotal) {
+        double subtotal = cartList.stream().mapToDouble(CartItem::getTotal).sum();
+        String dbMethod = method.equals("TIỀN MẶT") ? "CASH" : "TRANSFER";
+
+        Table selectedTable = cbOrderType.getValue();
+
+        boolean success = receiptDAO.createReceipt(cartList, subtotal, discount, finalTotal, dbMethod, customer, currentUser);
+
+        if (success) {
+            // Update trạng thái bàn
+            if (selectedTable != null && selectedTable.getId() > 0) {
+                if ("EMPTY".equals(selectedTable.getStatus())) {
+                    tableDAO.updateStatus(selectedTable.getId(), "SERVING");
+                    loadTables(); // Reload combo box
+
+                    // Restore selection
+                    for(Table t : cbOrderType.getItems()) {
+                        if(t.getId() == selectedTable.getId()) {
+                            cbOrderType.getSelectionModel().select(t);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Thành công");
+            alert.setHeaderText("Thanh toán thành công!");
+            String tableName = (selectedTable == null || selectedTable.getId() == 0) ? "Mang về" : selectedTable.getName();
+            alert.setContentText("Đơn hàng: " + tableName + "\nThực thu: " + String.format("%,.0f đ", finalTotal));
+            alert.showAndWait();
+
+            cartList.clear();
+            calculateTotals();
+        } else {
+            showAlert("Lỗi", "Có lỗi xảy ra khi lưu hóa đơn.");
+        }
+    }
+
     @FXML
     public void handleLogout(javafx.scene.input.MouseEvent event) {
         try {
@@ -316,11 +353,6 @@ public class POSController {
             stage.setScene(new Scene(loader.load()));
             stage.centerOnScreen();
         } catch (IOException e) { e.printStackTrace(); }
-    }
-
-    public void setSession(User user) {
-        this.currentUser = user;
-        if (user != null) lblUser.setText(user.getFullname() != null ? user.getFullname() : user.getUsername());
     }
 
     private void showAlert(String title, String content) {

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefWidth="600.0" spacing="0.0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-border-color: #e2e8f0; -fx-border-radius: 20; -fx-border-width: 1;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vuxnye.coffeeshop.controller.PromotionFormController">
+
+    <HBox alignment="CENTER_LEFT" style="-fx-padding: 20; -fx-border-color: transparent transparent #f1f5f9 transparent;">
+        <Label fx:id="lblTitle" style="-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: #1e293b;" text="Tạo khuyến mãi mới" />
+        <HBox HBox.hgrow="ALWAYS" />
+        <Button onAction="#closeWindow" style="-fx-background-color: #f8fafc; -fx-text-fill: #94a3b8; -fx-cursor: hand;" text="X" />
+    </HBox>
+
+    <VBox spacing="20.0" style="-fx-padding: 30;">
+        <VBox spacing="5.0">
+            <Label styleClass="label-mini" text="TÊN CHƯƠNG TRÌNH" />
+            <TextField fx:id="txtName" promptText="VD: Khuyến mãi mùa hè" styleClass="input-field" />
+        </VBox>
+
+        <HBox spacing="20.0">
+            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                <Label styleClass="label-mini" text="MÃ GIẢM GIÁ" />
+                <TextField fx:id="txtCode" promptText="SUMMER2024" styleClass="input-field" style="-fx-text-fill: #FFADAD;" />
+            </VBox>
+            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                <Label styleClass="label-mini" text="LOẠI GIẢM GIÁ" />
+                <ComboBox fx:id="cbType" maxWidth="1.7976931348623157E308" styleClass="input-field" />
+            </VBox>
+        </HBox>
+
+        <HBox spacing="20.0">
+            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                <Label styleClass="label-mini" text="GIÁ TRỊ GIẢM" />
+                <TextField fx:id="txtValue" promptText="VD: 10 hoặc 20000" styleClass="input-field" />
+            </VBox>
+            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                <Label styleClass="label-mini" text="ĐƠN TỐI THIỂU (Đ)" />
+                <TextField fx:id="txtMinOrder" promptText="0" styleClass="input-field" />
+            </VBox>
+        </HBox>
+
+        <VBox spacing="5.0">
+            <Label styleClass="label-mini" text="GIẢM TỐI ĐA (Đ) - Dành cho %" />
+            <TextField fx:id="txtMaxDiscount" promptText="0 (Không giới hạn)" styleClass="input-field" />
+        </VBox>
+
+        <HBox spacing="20.0">
+            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                <Label styleClass="label-mini" text="NGÀY BẮT ĐẦU" />
+                <DatePicker fx:id="dpStart" maxWidth="1.7976931348623157E308" styleClass="input-field" />
+            </VBox>
+            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                <Label styleClass="label-mini" text="NGÀY KẾT THÚC" />
+                <DatePicker fx:id="dpEnd" maxWidth="1.7976931348623157E308" styleClass="input-field" />
+            </VBox>
+        </HBox>
+
+        <HBox spacing="15.0" style="-fx-padding: 10 0 0 0;">
+            <Button onAction="#closeWindow" prefHeight="45.0" styleClass="btn-secondary" style="-fx-background-color: #f1f5f9; -fx-text-fill: #64748b;" text="HỦY BỎ" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+            <Button onAction="#savePromotion" prefHeight="45.0" styleClass="btn-secondary" text="LƯU KHUYẾN MÃI" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+        </HBox>
+    </VBox>
+</VBox>

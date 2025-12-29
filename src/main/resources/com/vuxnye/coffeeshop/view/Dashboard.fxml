@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane prefHeight="800.0" prefWidth="1040.0" styleClass="root" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vuxnye.coffeeshop.controller.DashboardController">
+
+    <top>
+        <VBox spacing="10.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="20.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+            <children>
+                <Label style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: #1e293b;" text="Tổng quan" />
+                <Label style="-fx-text-fill: #64748B; -fx-font-weight: bold; -fx-font-size: 13px;" text="Thống kê tình hình kinh doanh trong ngày và tuần qua." />
+            </children>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="30.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="10.0" />
+            </padding>
+            <children>
+
+                <HBox spacing="20.0">
+                    <VBox style="-fx-background-color: white; -fx-background-radius: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 3); -fx-padding: 25;" HBox.hgrow="ALWAYS">
+                        <children>
+                            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                <StackPane style="-fx-background-color: #EBF5FF; -fx-background-radius: 15; -fx-min-width: 50; -fx-min-height: 50;">
+                                    <children>
+                                        <SVGPath content="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" fill="TRANSPARENT" scaleX="1.2" scaleY="1.2" stroke="#4A90E2" strokeWidth="2" />
+                                    </children>
+                                </StackPane>
+                                <Pane HBox.hgrow="ALWAYS" />
+                                <Pane style="-fx-background-color: #4A90E2; -fx-min-width: 8; -fx-min-height: 8; -fx-background-radius: 10;" />
+                            </HBox>
+                            <Label style="-fx-text-fill: #64748B; -fx-font-weight: 900; -fx-font-size: 11px;" text="DOANH THU NGÀY">
+                                <VBox.margin>
+                                    <Insets top="20.0" />
+                                </VBox.margin>
+                            </Label>
+                            <Label fx:id="lblRevenue" style="-fx-text-fill: #1E293B; -fx-font-weight: 900; -fx-font-size: 24px;" text="0 đ" />
+                        </children>
+                    </VBox>
+
+                    <VBox style="-fx-background-color: white; -fx-background-radius: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 3); -fx-padding: 25;" HBox.hgrow="ALWAYS">
+                        <children>
+                            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                <StackPane style="-fx-background-color: #F1EFFF; -fx-background-radius: 15; -fx-min-width: 50; -fx-min-height: 50;">
+                                    <children>
+                                        <SVGPath content="M9 21h1M20 21h1M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" fill="TRANSPARENT" scaleX="1.1" scaleY="1.1" stroke="#8E78FF" strokeWidth="2" />
+                                    </children>
+                                </StackPane>
+                                <Pane HBox.hgrow="ALWAYS" />
+                                <Pane style="-fx-background-color: #8E78FF; -fx-min-width: 8; -fx-min-height: 8; -fx-background-radius: 10;" />
+                            </HBox>
+                            <Label style="-fx-text-fill: #64748B; -fx-font-weight: 900; -fx-font-size: 11px;" text="ĐƠN HÀNG">
+                                <VBox.margin>
+                                    <Insets top="20.0" />
+                                </VBox.margin>
+                            </Label>
+                            <Label fx:id="lblOrders" style="-fx-text-fill: #1E293B; -fx-font-weight: 900; -fx-font-size: 24px;" text="0" />
+                        </children>
+                    </VBox>
+
+                    <VBox style="-fx-background-color: white; -fx-background-radius: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 3); -fx-padding: 25;" HBox.hgrow="ALWAYS">
+                        <children>
+                            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                <StackPane style="-fx-background-color: #FFF2F2; -fx-background-radius: 15; -fx-min-width: 50; -fx-min-height: 50;">
+                                    <children>
+                                        <SVGPath content="M23 6l-9.5 9.5-5-5L1 18" fill="TRANSPARENT" scaleX="1.2" scaleY="1.2" stroke="#FFADAD" strokeWidth="2" />
+                                    </children>
+                                </StackPane>
+                                <Pane HBox.hgrow="ALWAYS" />
+                                <Pane style="-fx-background-color: #FFADAD; -fx-min-width: 8; -fx-min-height: 8; -fx-background-radius: 10;" />
+                            </HBox>
+                            <Label style="-fx-text-fill: #64748B; -fx-font-weight: 900; -fx-font-size: 11px;" text="TRUNG BÌNH / ĐƠN">
+                                <VBox.margin>
+                                    <Insets top="20.0" />
+                                </VBox.margin>
+                            </Label>
+                            <Label fx:id="lblAvgOrder" style="-fx-text-fill: #1E293B; -fx-font-weight: 900; -fx-font-size: 24px;" text="0 đ" />
+                        </children>
+                    </VBox>
+                </HBox>
+
+                <VBox style="-fx-background-color: white; -fx-background-radius: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 3); -fx-padding: 20;" VBox.vgrow="ALWAYS">
+                    <children>
+                        <Label style="-fx-font-size: 16px; -fx-font-weight: 900; -fx-text-fill: #1e293b;" text="THỐNG KÊ DOANH THU TUẦN" />
+                        <AreaChart fx:id="areaChart" legendVisible="false" styleClass="custom-chart" verticalGridLinesVisible="false" VBox.vgrow="ALWAYS">
+                            <xAxis>
+                                <CategoryAxis side="BOTTOM" tickLabelFill="#64748b" />
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT" tickLabelFill="#64748b" />
+                            </yAxis>
+                        </AreaChart>
+                    </children>
+                </VBox>
+
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

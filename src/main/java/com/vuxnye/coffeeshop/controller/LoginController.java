@@ -70,22 +70,34 @@ public class LoginController {
         User user = userDAO.checkLogin(username, password);
 
         if (user != null) {
-            showAlert(Alert.AlertType.INFORMATION, "Thành công", "Xin chào: " + user.getFullname());
-
             // --- CHUYỂN SANG MÀN HÌNH CHÍNH (MAIN LAYOUT) ---
             try {
-                // SỬA: Load MainLayout thay vì POS
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vuxnye/coffeeshop/view/MainLayout.fxml"));
                 Parent root = loader.load();
 
-                // Lưu ý: Nếu cần truyền User Session, ta có thể tạo SessionManager hoặc
-                // truyền vào MainLayoutController (nếu cần thiết)
-                // Hiện tại ứng dụng sẽ chạy vào màn hình chính.
+                // Truyền User Session vào MainLayout (Nếu cần)
+                MainLayoutController mainController = loader.getController();
+                // mainController.setSession(user);
 
-                Stage stage = (Stage) loginForm.getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.setMaximized(true);
-                stage.centerOnScreen();
+                // --- GIẢI PHÁP FIX LỖI KHÔNG FULL MÀN HÌNH: TẠO STAGE MỚI ---
+
+                // 1. Tạo một cửa sổ (Stage) hoàn toàn mới
+                Stage mainStage = new Stage();
+                Scene scene = new Scene(root);
+
+                mainStage.setScene(scene);
+                mainStage.setTitle("BaristaFlow - Hệ thống quản lý quán cà phê");
+
+                // 2. Phóng to cửa sổ mới này
+                mainStage.setMaximized(true);
+
+                // 3. Hiển thị cửa sổ chính
+                mainStage.show();
+
+                // 4. Đóng cửa sổ Login cũ đi
+                Stage loginStage = (Stage) loginForm.getScene().getWindow();
+                loginStage.close();
+
             } catch (IOException e) {
                 e.printStackTrace();
                 showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể tải giao diện chính: " + e.getMessage());
@@ -95,6 +107,7 @@ public class LoginController {
             showAlert(Alert.AlertType.ERROR, "Lỗi đăng nhập", "Tên đăng nhập hoặc mật khẩu không chính xác.");
         }
     }
+
 
     // --- XỬ LÝ QUÊN MẬT KHẨU (GIỮ NGUYÊN) ---
     @FXML

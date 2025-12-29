@@ -14,5 +14,7 @@ public class MainLayoutController {
 
         // Mặc định mở màn hình POS khi vào
         ViewManager.getInstance().switchView("/com/vuxnye/coffeeshop/view/POS.fxml");
+
+
     }
 }

@@ -2,10 +2,12 @@ package com.vuxnye.coffeeshop.dao;
 
 import com.vuxnye.coffeeshop.model.CartItem;
 import com.vuxnye.coffeeshop.model.Customer;
+import com.vuxnye.coffeeshop.model.Receipt;
 import com.vuxnye.coffeeshop.model.User;
 import com.vuxnye.coffeeshop.util.DatabaseConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReceiptDAO {
@@ -103,5 +105,53 @@ public class ReceiptDAO {
                 if (conn != null) { conn.setAutoCommit(true); conn.close(); }
             } catch (SQLException e) { e.printStackTrace(); }
         }
+    }
+    // Lấy tất cả hóa đơn (Dùng cho thống kê)
+    public List<Receipt> getAllReceipts() {
+        List<Receipt> list = new ArrayList<>();
+        String sql = "SELECT * FROM receipt ORDER BY created_at DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                list.add(new Receipt(
+                        rs.getInt("id"),
+                        rs.getDouble("total_amount"),
+                        rs.getString("payment_method"),
+                        rs.getInt("customer_id"),
+                        rs.getTimestamp("created_at")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Hàm tạo hóa đơn mới (Dùng khi thanh toán ở POS)
+    public int createReceipt(Receipt receipt) {
+        String sql = "INSERT INTO receipt (total_amount, payment_method, customer_id, created_at) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setDouble(1, receipt.getTotalAmount());
+            stmt.setString(2, receipt.getPaymentMethod());
+            stmt.setInt(3, receipt.getCustomerId());
+            stmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1); // Trả về ID hóa đơn vừa tạo
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Lỗi
     }
 }

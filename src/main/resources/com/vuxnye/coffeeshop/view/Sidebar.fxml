@@ -25,7 +25,7 @@
             </children>
         </HBox>
 
-        <Button fx:id="btnDashboard" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Tổng quan">
+        <Button fx:id="btnDashboard" onAction="#handleDashboard" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Tổng quan">
             <graphic>
                 <SVGPath content="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" style="-fx-fill: #94A3B8;" />
             </graphic>
@@ -46,6 +46,12 @@
         <Button fx:id="btnMenu" onAction="#handleMenu" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Thực đơn">
             <graphic>
                 <SVGPath content="M8 6h8v2H8z" style="-fx-fill: #94A3B8;" />
+            </graphic>
+        </Button>
+
+        <Button fx:id="btnPromotion" onAction="#handlePromotion" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Khuyến mãi">
+            <graphic>
+                <SVGPath content="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" style="-fx-fill: #94A3B8;" scaleX="0.9" scaleY="0.9" />
             </graphic>
         </Button>
 

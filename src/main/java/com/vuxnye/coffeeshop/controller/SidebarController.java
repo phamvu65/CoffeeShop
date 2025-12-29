@@ -16,11 +16,20 @@ public class SidebarController {
     @FXML private Button btnPOS;
     @FXML private Button btnTable;
     @FXML private Button btnMenu;
+    @FXML private Button btnPromotion;
     @FXML private Label lblUser;
 
     @FXML
     public void initialize() {
-        // Có thể highlight nút đang chọn tại đây nếu muốn
+        // Mặc định có thể set active cho Dashboard khi mới vào
+        // setActiveStyle(btnDashboard);
+    }
+
+    // [MỚI] Xử lý nút Tổng quan
+    @FXML
+    public void handleDashboard() {
+        setActiveStyle(btnDashboard);
+        ViewManager.getInstance().switchView("/com/vuxnye/coffeeshop/view/Dashboard.fxml");
     }
 
     @FXML
@@ -42,6 +51,12 @@ public class SidebarController {
     }
 
     @FXML
+    public void handlePromotion() {
+        setActiveStyle(btnPromotion);
+        ViewManager.getInstance().switchView("/com/vuxnye/coffeeshop/view/Promotions.fxml");
+    }
+
+    @FXML
     public void handleLogout() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vuxnye/coffeeshop/view/Login.fxml"));
@@ -52,19 +67,20 @@ public class SidebarController {
     }
 
     private void setActiveStyle(Button activeBtn) {
-        // Reset style các nút khác
+        // Reset style tất cả các nút
         resetStyle(btnDashboard);
         resetStyle(btnPOS);
         resetStyle(btnTable);
         resetStyle(btnMenu);
+        resetStyle(btnPromotion);
 
-        // Set style active cho nút được chọn (thêm class .menu-btn-active trong CSS)
+        // Set style active cho nút được chọn
         activeBtn.getStyleClass().add("menu-btn-active");
-
-        // Đổi màu icon (nếu muốn phức tạp hơn thì cần code xử lý SVG, tạm thời ta đổi style background text)
     }
 
     private void resetStyle(Button btn) {
-        btn.getStyleClass().remove("menu-btn-active");
+        if(btn != null) {
+            btn.getStyleClass().remove("menu-btn-active");
+        }
     }
 }
