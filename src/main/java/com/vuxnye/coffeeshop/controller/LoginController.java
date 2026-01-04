@@ -75,15 +75,19 @@ public class LoginController {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vuxnye/coffeeshop/view/MainLayout.fxml"));
                 Parent root = loader.load();
 
-                // Truyền User Session vào MainLayout (Nếu cần)
+                // [QUAN TRỌNG] Lấy Controller và truyền User Session vào
                 MainLayoutController mainController = loader.getController();
-                // mainController.setSession(user);
+                mainController.setLoggedInUser(user);
+                // Hàm này sẽ tự động setup Sidebar (ẩn nút) và load Dashboard/POS
 
-                // --- GIẢI PHÁP FIX LỖI KHÔNG FULL MÀN HÌNH: TẠO STAGE MỚI ---
+                // --- TẠO STAGE MỚI ĐỂ FULL MÀN HÌNH ---
 
                 // 1. Tạo một cửa sổ (Stage) hoàn toàn mới
                 Stage mainStage = new Stage();
                 Scene scene = new Scene(root);
+
+                // Nếu muốn add CSS toàn cục
+                // scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
 
                 mainStage.setScene(scene);
                 mainStage.setTitle("BaristaFlow - Hệ thống quản lý quán cà phê");

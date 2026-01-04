@@ -306,45 +306,50 @@ public class POSController {
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-    public void onCheckoutCompleted(String method, Customer customer, double discount, double finalTotal) {
-        double subtotal = cartList.stream().mapToDouble(CartItem::getTotal).sum();
-        String dbMethod = method.equals("TIỀN MẶT") ? "CASH" : "TRANSFER";
+    /**
+     * Hàm này được gọi từ CheckoutController khi nhấn "Xác nhận thanh toán"
+     * @param paymentMethod: "TIỀN MẶT" hoặc "CHUYỂN KHOẢN"
+     * @param customer: Khách hàng (có thể null nếu khách vãng lai)
+     * @param discount: Số tiền giảm giá
+     * @param finalTotal: Tổng tiền sau khi giảm
+     */
+    public void onCheckoutCompleted(String paymentMethod, Customer customer, double discount, double finalTotal) {
+        // BƯỚC 1: Tạo đối tượng Receipt (Hóa đơn chính)
+        Receipt receipt = new Receipt(
+                0, // ID tự tăng
+                finalTotal, // Tổng tiền thực thu
+                paymentMethod,
+                customer != null ? customer.getId() : 0, // ID khách
+                null // Thời gian sẽ tự tạo trong DAO
+        );
 
-        Table selectedTable = cbOrderType.getValue();
+        // BƯỚC 2: Lưu hóa đơn vào DB và lấy ID vừa tạo
+        int receiptId = receiptDAO.createReceipt(receipt);
 
-        boolean success = receiptDAO.createReceipt(cartList, subtotal, discount, finalTotal, dbMethod, customer, currentUser);
+        if (receiptId > 0) {
+            // BƯỚC 3: Lưu chi tiết các món trong giỏ hàng vào bảng receipt_detail
+            // Việc này giúp Báo cáo (ReportDAO) có dữ liệu để vẽ biểu đồ
+            receiptDAO.createReceiptDetails(receiptId, cartList);
 
-        if (success) {
-            // Update trạng thái bàn
-            if (selectedTable != null && selectedTable.getId() > 0) {
-                if ("EMPTY".equals(selectedTable.getStatus())) {
-                    tableDAO.updateStatus(selectedTable.getId(), "SERVING");
-                    loadTables(); // Reload combo box
-
-                    // Restore selection
-                    for(Table t : cbOrderType.getItems()) {
-                        if(t.getId() == selectedTable.getId()) {
-                            cbOrderType.getSelectionModel().select(t);
-                            break;
-                        }
-                    }
-                }
-            }
-
+            // BƯỚC 4: Thông báo thành công
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Thành công");
-            alert.setHeaderText("Thanh toán thành công!");
-            String tableName = (selectedTable == null || selectedTable.getId() == 0) ? "Mang về" : selectedTable.getName();
-            alert.setContentText("Đơn hàng: " + tableName + "\nThực thu: " + String.format("%,.0f đ", finalTotal));
+            alert.setHeaderText(null);
+            alert.setContentText("Thanh toán thành công! Mã hóa đơn: #" + receiptId);
             alert.showAndWait();
 
+            // BƯỚC 5: Làm sạch giỏ hàng để bán đơn mới
             cartList.clear();
-            calculateTotals();
+            // Gọi hàm cập nhật lại tổng tiền trên giao diện POS (nếu có)
+            // updateCartTotals();
         } else {
-            showAlert("Lỗi", "Có lỗi xảy ra khi lưu hóa đơn.");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Lỗi");
+            alert.setHeaderText(null);
+            alert.setContentText("Không thể lưu hóa đơn vào hệ thống!");
+            alert.showAndWait();
         }
     }
-
     @FXML
     public void handleLogout(javafx.scene.input.MouseEvent event) {
         try {

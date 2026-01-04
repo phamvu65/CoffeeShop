@@ -6,52 +6,83 @@ import com.vuxnye.coffeeshop.model.Customer;
 import com.vuxnye.coffeeshop.model.Promotion;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.util.Date;
 
 public class CheckoutController {
 
+    // --- Khách hàng ---
     @FXML private TextField txtCustomerPhone;
-    @FXML private Label lblCustomerName;
-    @FXML private ComboBox<String> cbPaymentMethod;
-    @FXML private Label lblSubtotal, lblTotal;
+    @FXML private VBox boxCustomerName;
+    @FXML private TextField txtCustomerName;
+    @FXML private Label lblCustomerStatus;
 
-    // [MỚI] Các field cho voucher
+    // --- Voucher ---
     @FXML private TextField txtVoucher;
-    @FXML private Label lblVoucherMessage; // Hiện thông báo lỗi/thành công
-    @FXML private Label lblDiscount;
+    @FXML private Label lblVoucherMessage;
+
+    // --- Thanh toán ---
+    @FXML private ComboBox<String> cbPaymentMethod;
+    @FXML private Label lblSubtotal, lblTotal, lblDiscount;
 
     private double subtotalAmount;
-    private double discountAmount = 0; // Số tiền được giảm
+    private double discountAmount = 0;
     private double finalTotalAmount;
 
     private POSController posController;
     private Customer currentCustomer = null;
 
-    private CustomerDAO customerDAO = new CustomerDAO();
-    private PromotionDAO promoDAO = new PromotionDAO(); // DAO mới
+    private final CustomerDAO customerDAO = new CustomerDAO();
+    private final PromotionDAO promoDAO = new PromotionDAO();
+
+    // Quy đổi điểm: 10.000 VNĐ = 1 điểm
+    private final double POINTS_CONVERSION_RATE = 10000.0;
 
     @FXML
     public void initialize() {
-        cbPaymentMethod.getItems().addAll("TIỀN MẶT", "CHUYỂN KHOẢN");
+        // Setup ComboBox
+        cbPaymentMethod.getItems().addAll("TIỀN MẶT", "CHUYỂN KHOẢN", "THẺ NGÂN HÀNG");
         cbPaymentMethod.getSelectionModel().selectFirst();
 
-        txtCustomerPhone.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal.length() >= 10) {
-                Customer c = customerDAO.getCustomerByPhone(newVal);
-                if (c != null) {
-                    currentCustomer = c;
-                    lblCustomerName.setText(c.getName() + " (Điểm: " + c.getPoints() + ")");
-                } else {
-                    currentCustomer = null;
-                    lblCustomerName.setText("Khách mới (Sẽ tạo tự động)");
-                }
+        // Listener: Tìm kiếm khách hàng khi nhập SĐT
+        txtCustomerPhone.textProperty().addListener((obs, oldVal, newVal) -> handleCustomerSearch(newVal));
+    }
+
+    private void handleCustomerSearch(String phone) {
+        // Ẩn/Hiện box nhập tên
+        boxCustomerName.setVisible(false);
+        boxCustomerName.setManaged(false);
+        lblCustomerStatus.setText("");
+
+        if (phone.length() >= 10) {
+            Customer c = customerDAO.getCustomerByPhone(phone);
+
+            if (c != null) {
+                // KHÁCH CŨ: Tìm thấy
+                currentCustomer = c;
+                txtCustomerName.setText(c.getName());
+
+                lblCustomerStatus.setText("✓ Khách thành viên - Điểm tích lũy: " + String.format("%,d", c.getPoints()));
+                lblCustomerStatus.setStyle("-fx-text-fill: #166534;"); // Xanh lá
+
+                // Ẩn ô nhập tên vì đã có tên
+                boxCustomerName.setVisible(false);
+                boxCustomerName.setManaged(false);
             } else {
+                // KHÁCH MỚI: Chưa tìm thấy
                 currentCustomer = null;
-                lblCustomerName.setText("Khách lẻ");
+                txtCustomerName.clear();
+
+                lblCustomerStatus.setText("! Khách hàng mới - Vui lòng nhập tên để tạo tài khoản");
+                lblCustomerStatus.setStyle("-fx-text-fill: #d97706;"); // Cam
+
+                // Hiện ô nhập tên
+                boxCustomerName.setVisible(true);
+                boxCustomerName.setManaged(true);
             }
-        });
+        } else {
+            currentCustomer = null;
+        }
     }
 
     public void setOrderData(double subtotal, POSController posController) {
@@ -60,70 +91,44 @@ public class CheckoutController {
         updateTotals();
     }
 
-    // [MỚI] Hàm xử lý áp mã Voucher
     @FXML
     private void applyVoucher() {
         String code = txtVoucher.getText().trim().toUpperCase();
         if (code.isEmpty()) {
-            resetDiscount("Vui lòng nhập mã code!", true);
+            showVoucherMsg("Vui lòng nhập mã!", true);
             return;
         }
 
         Promotion promo = promoDAO.getPromotionByCode(code);
 
-        // 1. Kiểm tra tồn tại
         if (promo == null) {
-            resetDiscount("Mã giảm giá không tồn tại!", true);
-            return;
-        }
-
-        // 2. Kiểm tra trạng thái Active
-        if (!promo.isActive()) {
-            resetDiscount("Chương trình này đang tạm dừng!", true);
-            return;
-        }
-
-        // 3. Kiểm tra ngày hết hạn
-        long now = System.currentTimeMillis();
-        if (promo.getStartDate().getTime() > now || promo.getEndDate().getTime() < now) {
-            resetDiscount("Mã này đã hết hạn hoặc chưa bắt đầu!", true);
-            return;
-        }
-
-        // 4. Kiểm tra giá trị đơn tối thiểu
-        if (subtotalAmount < promo.getMinOrderValue()) {
-            resetDiscount("Đơn hàng phải từ " + String.format("%,.0f đ", promo.getMinOrderValue()) + " mới được dùng mã này!", true);
-            return;
-        }
-
-        // 5. Tính toán tiền giảm
-        double calculatedDiscount = 0;
-        if ("PERCENT".equals(promo.getType())) {
-            calculatedDiscount = subtotalAmount * (promo.getValue() / 100);
-            // Kiểm tra giảm tối đa
-            if (promo.getMaxDiscount() > 0 && calculatedDiscount > promo.getMaxDiscount()) {
-                calculatedDiscount = promo.getMaxDiscount();
-            }
+            showVoucherMsg("Mã không tồn tại!", true);
+            discountAmount = 0;
+        } else if (!promo.isActive()) {
+            showVoucherMsg("Chương trình đã kết thúc!", true);
+            discountAmount = 0;
+        } else if (subtotalAmount < promo.getMinOrderValue()) {
+            showVoucherMsg("Đơn hàng chưa đủ điều kiện tối thiểu!", true);
+            discountAmount = 0;
         } else {
-            // Giảm tiền mặt cố định
-            calculatedDiscount = promo.getValue();
+            // Tính toán giảm giá
+            if ("PERCENT".equals(promo.getType())) {
+                discountAmount = subtotalAmount * (promo.getValue() / 100);
+                if (promo.getMaxDiscount() > 0 && discountAmount > promo.getMaxDiscount()) {
+                    discountAmount = promo.getMaxDiscount();
+                }
+            } else {
+                discountAmount = promo.getValue();
+            }
+
+            if(discountAmount > subtotalAmount) discountAmount = subtotalAmount;
+
+            showVoucherMsg("Áp dụng mã thành công: -" + String.format("%,.0f đ", discountAmount), false);
         }
-
-        // Không được giảm quá giá trị đơn hàng
-        if (calculatedDiscount > subtotalAmount) calculatedDiscount = subtotalAmount;
-
-        // Áp dụng thành công
-        this.discountAmount = calculatedDiscount;
         updateTotals();
-
-        lblVoucherMessage.setText("Đã áp dụng mã: -" + String.format("%,.0f đ", discountAmount));
-        lblVoucherMessage.setStyle("-fx-text-fill: #166534;"); // Xanh lá
-        lblVoucherMessage.setVisible(true);
     }
 
-    private void resetDiscount(String msg, boolean isError) {
-        this.discountAmount = 0;
-        updateTotals();
+    private void showVoucherMsg(String msg, boolean isError) {
         lblVoucherMessage.setText(msg);
         lblVoucherMessage.setStyle("-fx-text-fill: " + (isError ? "#ef4444;" : "#166534;"));
         lblVoucherMessage.setVisible(true);
@@ -132,21 +137,41 @@ public class CheckoutController {
     private void updateTotals() {
         finalTotalAmount = subtotalAmount - discountAmount;
         lblSubtotal.setText(String.format("%,.0f đ", subtotalAmount));
-        lblDiscount.setText("- " + String.format("%,.0f đ", discountAmount)); // Hiện tiền giảm
+        lblDiscount.setText("- " + String.format("%,.0f đ", discountAmount));
         lblTotal.setText(String.format("%,.0f đ", finalTotalAmount));
     }
 
     @FXML
     private void confirmCheckout() {
+        String phone = txtCustomerPhone.getText().trim();
+        String name = txtCustomerName.getText().trim();
         String method = cbPaymentMethod.getValue();
 
-        if (currentCustomer == null && !txtCustomerPhone.getText().isEmpty()) {
-            currentCustomer = new Customer(0, "Khách mới", txtCustomerPhone.getText(), 0);
-            customerDAO.addCustomer(currentCustomer);
-            currentCustomer = customerDAO.getCustomerByPhone(txtCustomerPhone.getText());
+        // 1. Xử lý logic Khách hàng
+        if (!phone.isEmpty()) {
+            if (currentCustomer == null) {
+                // Nếu là khách mới -> Bắt buộc nhập tên
+                if (name.isEmpty()) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Vui lòng nhập Tên khách hàng mới!");
+                    alert.showAndWait();
+                    return;
+                }
+                // Tạo khách mới vào DB
+                Customer newCust = new Customer(0, name, phone, 0);
+                customerDAO.addCustomer(newCust);
+                // Lấy lại ID vừa tạo từ DB
+                currentCustomer = customerDAO.getCustomerByPhone(phone);
+            }
+
+            // 2. Tính điểm thưởng (10k = 1 điểm)
+            int pointsEarned = (int) (finalTotalAmount / POINTS_CONVERSION_RATE);
+            if (pointsEarned > 0 && currentCustomer != null) {
+                customerDAO.addPoints(currentCustomer.getId(), pointsEarned);
+                System.out.println("Đã cộng " + pointsEarned + " điểm cho khách " + currentCustomer.getName());
+            }
         }
 
-        // Gửi thông tin về POSController (bao gồm cả discount)
+        // 3. Gửi dữ liệu về POS và đóng
         posController.onCheckoutCompleted(method, currentCustomer, discountAmount, finalTotalAmount);
         closeWindow();
     }

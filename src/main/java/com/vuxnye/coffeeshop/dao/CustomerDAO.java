@@ -8,7 +8,29 @@ import java.util.List;
 
 public class CustomerDAO {
 
-    // [QUAN TRỌNG] Hàm tìm khách hàng theo số điện thoại
+    // Lấy danh sách khách hàng (Có tìm kiếm)
+    public List<Customer> searchCustomers(String keyword) {
+        List<Customer> list = new ArrayList<>();
+        String sql = "SELECT * FROM customer WHERE name LIKE ? OR phone LIKE ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            String query = "%" + keyword + "%";
+            stmt.setString(1, query);
+            stmt.setString(2, query);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                list.add(new Customer(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("phone"),
+                        rs.getInt("points")
+                ));
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
+
+    // [QUAN TRỌNG] Tìm khách theo SĐT (Dùng cho Checkout)
     public Customer getCustomerByPhone(String phone) {
         String sql = "SELECT * FROM customer WHERE phone = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -23,13 +45,11 @@ public class CustomerDAO {
                         rs.getInt("points")
                 );
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) { e.printStackTrace(); }
         return null;
     }
 
-    // [QUAN TRỌNG] Hàm thêm khách hàng mới (tự động khi thanh toán)
+    // Thêm khách hàng mới
     public void addCustomer(Customer c) {
         String sql = "INSERT INTO customer (name, phone, points) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -38,40 +58,44 @@ public class CustomerDAO {
             stmt.setString(2, c.getPhone());
             stmt.setInt(3, c.getPoints());
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) { e.printStackTrace(); }
     }
 
-    // Hàm cập nhật điểm (Dùng sau này)
-    public void updatePoints(int customerId, int newPoints) {
-        String sql = "UPDATE customer SET points = ? WHERE id = ?";
+    // Cập nhật thông tin khách
+    public void updateCustomer(Customer c) {
+        String sql = "UPDATE customer SET name=?, phone=?, points=? WHERE id=?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, newPoints);
-            stmt.setInt(2, customerId);
+            stmt.setString(1, c.getName());
+            stmt.setString(2, c.getPhone());
+            stmt.setInt(3, c.getPoints());
+            stmt.setInt(4, c.getId());
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) { e.printStackTrace(); }
     }
 
-    // Lấy tất cả khách hàng (Dùng cho trang quản lý khách hàng nếu có)
-    public List<Customer> getAllCustomers() {
-        List<Customer> list = new ArrayList<>();
-        String sql = "SELECT * FROM customer";
+    // [QUAN TRỌNG] Cộng điểm tích lũy
+    public void addPoints(int customerId, int pointsToAdd) {
+        String sql = "UPDATE customer SET points = points + ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                list.add(new Customer(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getString("phone"),
-                        rs.getInt("points")
-                ));
-            }
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, pointsToAdd);
+            stmt.setInt(2, customerId);
+            stmt.executeUpdate();
         } catch (SQLException e) { e.printStackTrace(); }
-        return list;
+    }
+
+    // Xóa khách hàng
+    public void deleteCustomer(int id) {
+        String sql = "DELETE FROM customer WHERE id=?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    public List<Customer> getAllCustomers() {
+        return searchCustomers("");
     }
 }

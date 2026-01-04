@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -9,45 +8,58 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefWidth="600.0" spacing="0.0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-border-color: #e2e8f0; -fx-border-radius: 20; -fx-border-width: 1;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vuxnye.coffeeshop.controller.ProductFormController">
+<VBox prefWidth="650.0" spacing="0.0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-border-color: #e2e8f0; -fx-border-radius: 20; -fx-border-width: 1;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vuxnye.coffeeshop.controller.ProductFormController">
 
     <HBox alignment="CENTER_LEFT" style="-fx-padding: 20; -fx-border-color: transparent transparent #f1f5f9 transparent;">
         <Label fx:id="lblTitle" style="-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: #1e293b;" text="Thêm món ăn mới" />
         <HBox HBox.hgrow="ALWAYS" />
-        <Button onAction="#closeWindow" style="-fx-background-color: #f8fafc; -fx-text-fill: #94a3b8; -fx-cursor: hand;" text="X" />
+        <Button onAction="#handleCancel" style="-fx-background-color: #f8fafc; -fx-text-fill: #94a3b8; -fx-cursor: hand;" text="X" />
     </HBox>
 
     <VBox spacing="20.0" style="-fx-padding: 30;">
         <HBox spacing="30.0">
+
             <VBox spacing="15.0" HBox.hgrow="ALWAYS">
                 <VBox spacing="5.0">
                     <Label styleClass="label-mini" text="TÊN MÓN ĂN" />
                     <TextField fx:id="txtName" promptText="VD: Cà phê sữa đá" styleClass="input-field" />
                 </VBox>
+
                 <VBox spacing="5.0">
                     <Label styleClass="label-mini" text="GIÁ BÁN (VNĐ)" />
                     <TextField fx:id="txtPrice" promptText="35000" styleClass="input-field" />
                 </VBox>
+
                 <VBox spacing="5.0">
                     <Label styleClass="label-mini" text="DANH MỤC" />
-                    <ComboBox fx:id="cbCategory" maxWidth="1.7976931348623157E308" styleClass="input-field" />
+                    <HBox spacing="5.0">
+                        <ComboBox fx:id="cbCategory" maxWidth="Infinity" promptText="Chọn danh mục" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        <Button onAction="#handleAddCategory" style="-fx-background-color: #dcfce7; -fx-text-fill: #166534; -fx-font-weight: bold; -fx-cursor: hand;" text="+" />
+                        <Button onAction="#handleEditCategory" style="-fx-background-color: #dbeafe; -fx-text-fill: #1e40af; -fx-font-weight: bold; -fx-cursor: hand;" text="✎" />
+                        <Button onAction="#handleDeleteCategory" style="-fx-background-color: #fee2e2; -fx-text-fill: #991b1b; -fx-font-weight: bold; -fx-cursor: hand;" text="🗑" />
+                    </HBox>
                 </VBox>
             </VBox>
 
-            <VBox spacing="10.0" prefWidth="200.0">
-                <Label styleClass="label-mini" text="ĐƯỜNG DẪN ẢNH" />
-                <TextField fx:id="txtImage" promptText="cafe.png" styleClass="input-field" />
+            <VBox spacing="10.0" prefWidth="240.0">
+                <Label styleClass="label-mini" text="HÌNH ẢNH (URL HOẶC FILE)" />
 
-                <VBox alignment="CENTER" style="-fx-border-color: #e2e8f0; -fx-border-style: dashed; -fx-border-radius: 10; -fx-background-color: #f8fafc;" prefHeight="130.0">
-                    <ImageView fx:id="imgPreview" fitHeight="100.0" fitWidth="150.0" preserveRatio="true" />
-                    <Label fx:id="lblImgPlaceholder" text="Xem trước ảnh" style="-fx-font-size: 10px; -fx-text-fill: #94a3b8; -fx-font-weight: bold;" />
+                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                    <TextField fx:id="txtImagePath" promptText="Paste link ảnh hoặc chọn file..." styleClass="input-field" HBox.hgrow="ALWAYS" />
+
+                    <Button onAction="#handleChooseImage" prefHeight="35" prefWidth="40" style="-fx-background-color: #e2e8f0; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-cursor: hand;" text="..." />
+                </HBox>
+
+                <VBox alignment="CENTER" prefHeight="140.0" style="-fx-border-color: #e2e8f0; -fx-border-style: dashed; -fx-border-radius: 10; -fx-background-color: #f8fafc; -fx-border-width: 2;">
+                    <ImageView fx:id="imgPreview" fitHeight="120.0" fitWidth="200.0" preserveRatio="true" />
+                    <Label fx:id="lblImgPlaceholder" style="-fx-font-size: 10px; -fx-text-fill: #94a3b8; -fx-font-weight: bold;" text="Xem trước ảnh" />
                 </VBox>
             </VBox>
         </HBox>
 
-        <HBox spacing="15.0" style="-fx-padding: 10 0 0 0;">
-            <Button onAction="#closeWindow" prefHeight="45.0" styleClass="btn-secondary" style="-fx-background-color: #f1f5f9; -fx-text-fill: #64748b;" text="HỦY BỎ" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
-            <Button onAction="#saveProduct" prefHeight="45.0" styleClass="btn-primary" text="LƯU THAY ĐỔI" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+        <HBox spacing="15.0" style="-fx-padding: 20 0 0 0;">
+            <Button maxWidth="Infinity" onAction="#handleCancel" prefHeight="45.0" style="-fx-background-color: #f1f5f9; -fx-text-fill: #64748b; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;" text="HỦY BỎ" HBox.hgrow="ALWAYS" />
+            <Button maxWidth="Infinity" onAction="#handleSave" prefHeight="45.0" styleClass="btn-primary" text="LƯU THAY ĐỔI" HBox.hgrow="ALWAYS" />
         </HBox>
     </VBox>
 </VBox>

@@ -8,32 +8,40 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefWidth="450.0" spacing="20.0" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 20; -fx-border-color: #E2E8F0; -fx-border-width: 1; -fx-border-radius: 20;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vuxnye.coffeeshop.controller.CheckoutController">
+<VBox prefWidth="480.0" spacing="20.0" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 20; -fx-border-color: #E2E8F0; -fx-border-width: 1; -fx-border-radius: 20;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vuxnye.coffeeshop.controller.CheckoutController">
 
-    <Label style="-fx-font-size: 20px; -fx-font-weight: 900; -fx-text-fill: #1E293B;" text="Xác nhận thanh toán" />
+    <Label style="-fx-font-size: 22px; -fx-font-weight: 900; -fx-text-fill: #1E293B;" text="Xác nhận thanh toán" />
 
     <Separator />
 
-    <VBox spacing="10.0">
-        <Label styleClass="label-mini" text="KHÁCH HÀNG" />
-        <TextField fx:id="txtCustomerPhone" promptText="Nhập số điện thoại khách hàng" styleClass="input-field" />
-        <Label fx:id="lblCustomerName" style="-fx-text-fill: #4A90E2; -fx-font-weight: bold; -fx-font-size: 13px;" text="Khách lẻ" />
+    <VBox spacing="15.0" style="-fx-background-color: #F8FAFC; -fx-padding: 15; -fx-background-radius: 15;">
+        <Label styleClass="label-mini" text="THÔNG TIN KHÁCH HÀNG (TÍCH ĐIỂM)" />
+
+        <VBox spacing="5.0">
+            <TextField fx:id="txtCustomerPhone" promptText="Nhập số điện thoại (10 số)..." styleClass="input-field" />
+            <Label fx:id="lblCustomerStatus" style="-fx-font-size: 11px; -fx-font-weight: bold;" wrapText="true" />
+        </VBox>
+
+        <VBox fx:id="boxCustomerName" managed="false" spacing="5.0" visible="false">
+            <Label styleClass="label-mini" text="TÊN KHÁCH HÀNG MỚI" />
+            <TextField fx:id="txtCustomerName" promptText="Nhập tên khách hàng..." styleClass="input-field" />
+        </VBox>
     </VBox>
 
     <Separator />
 
     <VBox spacing="10.0">
-        <Label styleClass="label-mini" text="MÃ GIẢM GIÁ (VOUCHER)" />
+        <Label styleClass="label-mini" text="MÃ KHUYẾN MÃI / VOUCHER" />
         <HBox spacing="10.0">
-            <TextField fx:id="txtVoucher" promptText="Nhập mã code" styleClass="input-field" HBox.hgrow="ALWAYS" />
-            <Button onAction="#applyVoucher" styleClass="btn-blue-sm" text="Áp dụng" prefHeight="35" />
+            <TextField fx:id="txtVoucher" promptText="Nhập mã code (nếu có)" styleClass="input-field" HBox.hgrow="ALWAYS" />
+            <Button onAction="#applyVoucher" prefHeight="35" styleClass="btn-blue-sm" text="Áp dụng" />
         </HBox>
-        <Label fx:id="lblVoucherMessage" visible="false" style="-fx-font-size: 11px; -fx-font-weight: bold;" />
+        <Label fx:id="lblVoucherMessage" style="-fx-font-size: 11px; -fx-font-weight: bold;" visible="false" />
     </VBox>
 
     <Separator />
 
-    <VBox spacing="15.0">
+    <VBox spacing="10.0">
         <HBox>
             <Label style="-fx-text-fill: #64748B; -fx-font-weight: bold;" text="Tạm tính" />
             <HBox HBox.hgrow="ALWAYS" />
@@ -49,18 +57,18 @@
         <HBox alignment="CENTER_LEFT">
             <Label style="-fx-font-size: 16px; -fx-font-weight: 900;" text="THÀNH TIỀN" />
             <HBox HBox.hgrow="ALWAYS" />
-            <Label fx:id="lblTotal" style="-fx-font-size: 20px; -fx-font-weight: 900; -fx-text-fill: #4A90E2;" text="0 đ" />
+            <Label fx:id="lblTotal" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: #4A90E2;" text="0 đ" />
         </HBox>
     </VBox>
 
     <VBox spacing="10.0">
-        <Label styleClass="label-mini" text="PHƯƠNG THỨC THANH TOÁN" />
+        <Label styleClass="label-mini" text="HÌNH THỨC THANH TOÁN" />
         <ComboBox fx:id="cbPaymentMethod" maxWidth="Infinity" styleClass="input-field" />
     </VBox>
 
     <HBox spacing="15.0" style="-fx-padding: 10 0 0 0;">
-        <Button onAction="#closeWindow" prefHeight="50.0" styleClass="btn-secondary" style="-fx-background-color: #F1F5F9; -fx-text-fill: #64748B;" text="HỦY" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
-        <Button onAction="#confirmCheckout" prefHeight="50.0" styleClass="btn-primary" text="XÁC NHẬN &amp; IN" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+        <Button maxWidth="Infinity" onAction="#closeWindow" prefHeight="50.0" style="-fx-background-color: #F1F5F9; -fx-text-fill: #64748B; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;" text="HỦY BỎ" HBox.hgrow="ALWAYS" />
+        <Button maxWidth="Infinity" onAction="#confirmCheckout" prefHeight="50.0" styleClass="btn-primary" text="XÁC NHẬN &amp; IN" HBox.hgrow="ALWAYS" />
     </HBox>
 
 </VBox>
