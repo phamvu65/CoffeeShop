@@ -208,8 +208,8 @@ public class POSController {
         double subtotal = 0;
         for (CartItem item : cartList) subtotal += item.getTotal();
 
-        double tax = subtotal * 0.1;
-        double total = subtotal + tax;
+        double tax = 0;
+        double total = subtotal ;
 
         if (lblSubtotal != null) lblSubtotal.setText(String.format("%,.0f đ", subtotal));
         if (lblTax != null) lblTax.setText(String.format("%,.0f đ", tax));

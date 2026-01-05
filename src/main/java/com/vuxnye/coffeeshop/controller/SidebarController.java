@@ -48,10 +48,10 @@ public class SidebarController {
         // Nếu KHÔNG PHẢI ADMIN (là Staff) -> Ẩn các chức năng quản lý
         if (user != null && user.getRoleId() != RoleEnum.ADMIN.getId()) {
             hideButton(btnDashboard);
-            hideButton(btnMenu);
-            hideButton(btnStaff);      // [QUAN TRỌNG] Nhân viên không được xem danh sách nhân viên
-            hideButton(btnCustomers);
-            hideButton(btnPromotion);
+//            hideButton(btnMenu);
+//            hideButton(btnStaff);      // [QUAN TRỌNG] Nhân viên không được xem danh sách nhân viên
+//            hideButton(btnCustomers);
+//            hideButton(btnPromotion);
             hideButton(btnReports);
 
             // Mặc định vào POS

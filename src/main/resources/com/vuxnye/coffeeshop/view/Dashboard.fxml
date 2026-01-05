@@ -43,7 +43,6 @@
                                     </children>
                                 </StackPane>
                                 <Pane HBox.hgrow="ALWAYS" />
-                                <Pane style="-fx-background-color: #4A90E2; -fx-min-width: 8; -fx-min-height: 8; -fx-background-radius: 10;" />
                             </HBox>
                             <Label style="-fx-text-fill: #64748B; -fx-font-weight: 900; -fx-font-size: 11px;" text="DOANH THU NGÀY">
                                 <VBox.margin>
@@ -63,7 +62,6 @@
                                     </children>
                                 </StackPane>
                                 <Pane HBox.hgrow="ALWAYS" />
-                                <Pane style="-fx-background-color: #8E78FF; -fx-min-width: 8; -fx-min-height: 8; -fx-background-radius: 10;" />
                             </HBox>
                             <Label style="-fx-text-fill: #64748B; -fx-font-weight: 900; -fx-font-size: 11px;" text="ĐƠN HÀNG">
                                 <VBox.margin>
@@ -83,7 +81,6 @@
                                     </children>
                                 </StackPane>
                                 <Pane HBox.hgrow="ALWAYS" />
-                                <Pane style="-fx-background-color: #FFADAD; -fx-min-width: 8; -fx-min-height: 8; -fx-background-radius: 10;" />
                             </HBox>
                             <Label style="-fx-text-fill: #64748B; -fx-font-weight: 900; -fx-font-size: 11px;" text="TRUNG BÌNH / ĐƠN">
                                 <VBox.margin>

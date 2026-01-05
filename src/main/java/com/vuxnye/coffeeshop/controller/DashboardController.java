@@ -34,13 +34,12 @@ public class DashboardController {
 
         LocalDate today = LocalDate.now();
 
-        // [ĐÃ SỬA] Thêm .toLocalDateTime() trước .toLocalDate()
         List<Receipt> todayReceipts = allReceipts.stream()
                 .filter(r -> r.getCreatedAt() != null &&
                         r.getCreatedAt().toLocalDateTime().toLocalDate().equals(today))
                 .collect(Collectors.toList());
 
-        double dailyRevenue = todayReceipts.stream().mapToDouble(Receipt::getTotalAmount).sum();
+        double dailyRevenue = todayReceipts.stream().mapToDouble(Receipt::getTotalPrice).sum();
         int totalOrders = todayReceipts.size();
         double avgOrder = totalOrders > 0 ? dailyRevenue / totalOrders : 0;
 
@@ -67,7 +66,7 @@ public class DashboardController {
                 LocalDate date = r.getCreatedAt().toLocalDateTime().toLocalDate();
 
                 if (revenueMap.containsKey(date)) {
-                    revenueMap.put(date, revenueMap.get(date) + r.getTotalAmount());
+                    revenueMap.put(date, revenueMap.get(date) + r.getTotalPrice());
                 }
             }
         }

@@ -104,13 +104,6 @@
                                 <Label fx:id="lblSubtotal" style="-fx-font-weight: bold;" text="0 đ" />
                             </children>
                         </HBox>
-                        <HBox>
-                            <children>
-                                <Label style="-fx-text-fill: #64748B;" text="Thuế (10%)" />
-                                <Pane HBox.hgrow="ALWAYS" />
-                                <Label fx:id="lblTax" style="-fx-font-weight: bold;" text="0 đ" />
-                            </children>
-                        </HBox>
                         <HBox alignment="CENTER_LEFT">
                             <children>
                                 <Label style="-fx-font-size: 14px; -fx-font-weight: bold;" text="TỔNG CỘNG" />

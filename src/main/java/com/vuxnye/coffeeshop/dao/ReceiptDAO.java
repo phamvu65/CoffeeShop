@@ -5,6 +5,8 @@ import com.vuxnye.coffeeshop.model.Receipt;
 import com.vuxnye.coffeeshop.util.DatabaseConnection;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class ReceiptDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setDouble(1, receipt.getTotalAmount());
+            stmt.setDouble(1, receipt.getTotalPrice());
             stmt.setString(2, receipt.getPaymentMethod());
 
             if (receipt.getCustomerId() > 0) {
@@ -65,7 +67,7 @@ public class ReceiptDAO {
         return -1; // Trả về -1 nếu lỗi
     }
 
-    // 3. [QUAN TRỌNG] Lưu chi tiết hóa đơn (Để ReportDAO có dữ liệu vẽ biểu đồ)
+    // 3. Lưu chi tiết hóa đơn (Để ReportDAO có dữ liệu vẽ biểu đồ)
     public void createReceiptDetails(int receiptId, List<CartItem> items) {
         String sql = "INSERT INTO receipt_detail (receipt_id, product_id, quantity, unit_price, subtotal) VALUES (?, ?, ?, ?, ?)";
 
@@ -87,5 +89,46 @@ public class ReceiptDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    // 4. Lấy lịch sử theo ngày (Đã sửa tên bảng customer)
+    public List<Receipt> getReceiptsByDate(LocalDate fromDate, LocalDate toDate) {
+        List<Receipt> list = new ArrayList<>();
+
+        // [QUAN TRỌNG] Đã sửa 'customers' thành 'customer' (số ít)
+        String sql = "SELECT r.*, c.name as cust_name FROM receipt r " +
+                "LEFT JOIN customer c ON r.customer_id = c.id " +
+                "WHERE r.created_at BETWEEN ? AND ? " +
+                "ORDER BY r.created_at DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            // Chuyển đổi LocalDate sang Timestamp (Đầu ngày và Cuối ngày)
+            stmt.setTimestamp(1, Timestamp.valueOf(fromDate.atStartOfDay()));
+            stmt.setTimestamp(2, Timestamp.valueOf(toDate.atTime(LocalTime.MAX)));
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Receipt r = new Receipt();
+                r.setId(rs.getInt("id"));
+
+                // [QUAN TRỌNG] Đã sửa thành "total_amount" cho đúng tên cột trong DB
+                r.setTotalPrice(rs.getDouble("total_amount"));
+
+                r.setPaymentMethod(rs.getString("payment_method"));
+                r.setCustomerId(rs.getInt("customer_id"));
+                r.setCreatedAt(rs.getTimestamp("created_at"));
+
+                // Lấy tên khách (nếu null thì là Khách vãng lai)
+                String cName = rs.getString("cust_name");
+                r.setCustomerName(cName != null ? cName : "Khách vãng lai");
+
+                list.add(r);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

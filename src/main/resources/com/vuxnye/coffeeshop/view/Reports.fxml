@@ -5,15 +5,19 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane prefHeight="800.0" prefWidth="1040.0" styleClass="root" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vuxnye.coffeeshop.controller.ReportsController">
+
     <top>
-        <VBox spacing="20.0" BorderPane.alignment="CENTER">
+        <VBox spacing="10.0" BorderPane.alignment="CENTER">
             <padding><Insets bottom="20.0" left="30.0" right="30.0" top="30.0" /></padding>
             <children>
                 <Label style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: #1e293b;" text="Báo cáo hiệu quả kinh doanh" />
@@ -23,21 +27,27 @@
     </top>
 
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0 30 30 0;">
             <content>
                 <VBox spacing="30.0">
                     <padding><Insets bottom="30.0" left="30.0" right="30.0" /></padding>
                     <children>
+
                         <HBox spacing="30.0">
                             <VBox style="-fx-background-color: white; -fx-background-radius: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 3); -fx-padding: 25;" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight: 900; -fx-text-fill: #1e293b; -fx-font-size: 16px;" text="Cơ cấu doanh thu" />
-                                <PieChart fx:id="pieChart" legendSide="RIGHT" minHeight="300.0" />
+                                <PieChart fx:id="pieChart" labelsVisible="true" legendSide="RIGHT" legendVisible="false" minHeight="300.0" />
                             </VBox>
+
                             <VBox style="-fx-background-color: white; -fx-background-radius: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 3); -fx-padding: 25;" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight: 900; -fx-text-fill: #1e293b; -fx-font-size: 16px;" text="Top 5 sản phẩm bán chạy" />
-                                <BarChart fx:id="barChart" legendVisible="false" minHeight="300.0" styleClass="custom-chart" horizontalGridLinesVisible="false" verticalGridLinesVisible="false">
-                                    <xAxis><CategoryAxis side="BOTTOM" tickLabelFill="#94a3b8" /></xAxis>
-                                    <yAxis><NumberAxis side="LEFT" tickLabelFill="#94a3b8" /></yAxis>
+                                <BarChart fx:id="barChart" animated="false" horizontalGridLinesVisible="false" legendVisible="false" minHeight="300.0" styleClass="custom-chart" verticalGridLinesVisible="false">
+                                    <xAxis>
+                                        <CategoryAxis fx:id="xAxis" label="Sản phẩm" side="BOTTOM" tickLabelRotation="-15" />
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis label="Số lượng" side="LEFT" />
+                                    </yAxis>
                                 </BarChart>
                             </VBox>
                         </HBox>
@@ -59,6 +69,28 @@
                                 </VBox>
                             </HBox>
                         </VBox>
+
+                        <VBox spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 3); -fx-padding: 30;">
+
+                            <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                <Label style="-fx-font-weight: 900; -fx-text-fill: #1e293b; -fx-font-size: 16px;" text="Lịch sử đơn hàng" />
+                                <ComboBox fx:id="cbTimeFilter" prefWidth="150.0" style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 5;" />
+                            </HBox>
+
+                            <TableView fx:id="tblHistory" minHeight="400.0" styleClass="custom-table">
+                                <columns>
+                                    <TableColumn fx:id="colId" prefWidth="80.0" style="-fx-alignment: CENTER;" text="Mã HĐ" />
+                                    <TableColumn fx:id="colDate" prefWidth="150.0" style="-fx-alignment: CENTER;" text="Thời gian" />
+                                    <TableColumn fx:id="colCustomer" prefWidth="200.0" text="Khách hàng" />
+                                    <TableColumn fx:id="colPayment" prefWidth="150.0" style="-fx-alignment: CENTER;" text="Thanh toán" />
+                                    <TableColumn fx:id="colTotal" prefWidth="150.0" style="-fx-alignment: CENTER-RIGHT;" text="Tổng tiền" />
+                                </columns>
+                                <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                </columnResizePolicy>
+                            </TableView>
+                        </VBox>
+
                     </children>
                 </VBox>
             </content>

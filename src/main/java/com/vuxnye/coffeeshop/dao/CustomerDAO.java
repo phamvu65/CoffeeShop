@@ -98,4 +98,19 @@ public class CustomerDAO {
     public List<Customer> getAllCustomers() {
         return searchCustomers("");
     }
+
+    public boolean isPhoneExists(String phone) {
+        String sql = "SELECT COUNT(*) FROM " + "customers" + " WHERE phone = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, phone);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

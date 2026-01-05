@@ -24,7 +24,6 @@ public class TableController {
     private String currentFilter = "ALL";
 
     // SVG Icons
-    private final String ICON_COFFEE = "M18.5,4h-13C4.1,4,3,5.1,3,6.5v9C3,16.9,4.1,18,5.5,18h13c1.4,0,2.5-1.1,2.5-2.5v-9C21,5.1,19.9,4,18.5,4z";
     private final String ICON_USER = "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z";
 
     @FXML
@@ -70,7 +69,7 @@ public class TableController {
             textColor = "#C2410C"; // Màu chữ cam đậm
         } else {
             // EMPTY
-            iconPath = ICON_COFFEE;
+            iconPath = ICON_USER;
             statusText = "Bàn trống";
             textColor = "#64748B"; // Màu chữ xám
         }
@@ -97,7 +96,6 @@ public class TableController {
         Label lblStatus = new Label(statusText);
         lblStatus.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-transform: uppercase; -fx-text-fill: " + textColor + ";");
 
-        // Đã bỏ phần Pane statusIndicator (thanh màu trên đầu)
 
         card.getChildren().addAll(iconBox, lblName, lblStatus);
 
