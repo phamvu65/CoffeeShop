@@ -1,6 +1,7 @@
 package com.vuxnye.coffeeshop.controller;
 
 import com.vuxnye.coffeeshop.model.User;
+import com.vuxnye.coffeeshop.util.Refreshable; // [QUAN TRỌNG] Import Interface
 import com.vuxnye.coffeeshop.util.RoleEnum;
 import com.vuxnye.coffeeshop.util.ViewManager;
 import javafx.fxml.FXML;
@@ -20,7 +21,7 @@ public class SidebarController {
     @FXML private Button btnTable;
     @FXML private Button btnMenu;
     @FXML private Button btnCustomers;
-    @FXML private Button btnStaff;     // [CÓ] Nút Quản lý nhân viên
+    @FXML private Button btnStaff;
     @FXML private Button btnPromotion;
     @FXML private Button btnReports;
     @FXML private Label lblUser;
@@ -44,15 +45,12 @@ public class SidebarController {
             lblUser.setText("Hi, " + user.getUsername());
         }
 
-        // 2. Phân quyền (Role-based Access Control)
-        // Nếu KHÔNG PHẢI ADMIN (là Staff) -> Ẩn các chức năng quản lý
+        // 2. Phân quyền
         if (user != null && user.getRoleId() != RoleEnum.ADMIN.getId()) {
+            // Nếu là STAFF -> Ẩn các chức năng quản lý
             hideButton(btnDashboard);
-//            hideButton(btnMenu);
-//            hideButton(btnStaff);      // [QUAN TRỌNG] Nhân viên không được xem danh sách nhân viên
-//            hideButton(btnCustomers);
-//            hideButton(btnPromotion);
             hideButton(btnReports);
+            hideButton(btnStaff); // Staff thường không quản lý nhân viên
 
             // Mặc định vào POS
             handlePOS();
@@ -62,61 +60,69 @@ public class SidebarController {
         }
     }
 
-    // --- Navigation Handlers ---
+    // =========================================================================
+    // [MỚI] HÀM ĐIỀU HƯỚNG CHUNG (NAVIGATE)
+    // =========================================================================
+    // Hàm này giúp code gọn hơn và tự động Refresh dữ liệu
+    private void navigate(String fxmlPath, Button activeBtn) {
+        // 1. Đổi màu nút active
+        setActiveStyle(activeBtn);
+
+        // 2. Chuyển cảnh và nhận về Controller
+        Object controller = ViewManager.getInstance().switchView(fxmlPath);
+
+        // 3. Nếu Controller đó có chức năng Refreshable -> Gọi refreshData()
+        if (controller instanceof Refreshable) {
+            ((Refreshable) controller).refreshData();
+        }
+    }
+
+    // --- Navigation Handlers (Đã được viết lại gọn gàng) ---
 
     @FXML
     public void handleDashboard() {
-        setActiveStyle(btnDashboard);
-        ViewManager.getInstance().switchView("/com/vuxnye/coffeeshop/view/Dashboard.fxml");
+        navigate("/com/vuxnye/coffeeshop/view/Dashboard.fxml", btnDashboard);
     }
 
     @FXML
     public void handlePOS() {
-        setActiveStyle(btnPOS);
-        ViewManager.getInstance().switchView("/com/vuxnye/coffeeshop/view/POS.fxml");
+        navigate("/com/vuxnye/coffeeshop/view/POS.fxml", btnPOS);
     }
 
     @FXML
     public void handleTable() {
-        setActiveStyle(btnTable);
-        ViewManager.getInstance().switchView("/com/vuxnye/coffeeshop/view/TableView.fxml");
+        navigate("/com/vuxnye/coffeeshop/view/TableView.fxml", btnTable);
     }
 
     @FXML
     public void handleMenu() {
-        setActiveStyle(btnMenu);
-        ViewManager.getInstance().switchView("/com/vuxnye/coffeeshop/view/Menu.fxml");
+        navigate("/com/vuxnye/coffeeshop/view/Menu.fxml", btnMenu);
     }
 
     @FXML
     public void handleCustomers() {
-        setActiveStyle(btnCustomers);
-        ViewManager.getInstance().switchView("/com/vuxnye/coffeeshop/view/Customers.fxml");
+        navigate("/com/vuxnye/coffeeshop/view/Customers.fxml", btnCustomers);
     }
 
-    // [CÓ] Thêm xử lý cho nút nhân viên
     @FXML
     public void handleStaff() {
-        setActiveStyle(btnStaff);
-        ViewManager.getInstance().switchView("/com/vuxnye/coffeeshop/view/Staff.fxml");
+        navigate("/com/vuxnye/coffeeshop/view/Staff.fxml", btnStaff);
     }
 
     @FXML
     public void handlePromotion() {
-        setActiveStyle(btnPromotion);
-        ViewManager.getInstance().switchView("/com/vuxnye/coffeeshop/view/Promotions.fxml");
+        navigate("/com/vuxnye/coffeeshop/view/Promotions.fxml", btnPromotion);
     }
 
     @FXML
     public void handleReports() {
-        setActiveStyle(btnReports);
-        ViewManager.getInstance().switchView("/com/vuxnye/coffeeshop/view/Reports.fxml");
+        navigate("/com/vuxnye/coffeeshop/view/Reports.fxml", btnReports);
     }
 
     @FXML
     public void handleLogout() {
         try {
-            // Reset cache view để lần sau đăng nhập không bị lưu trạng thái cũ
+            // Reset cache view
             ViewManager.getInstance().clearCache();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vuxnye/coffeeshop/view/Login.fxml"));
@@ -131,17 +137,15 @@ public class SidebarController {
     // --- Helper Methods ---
 
     private void setActiveStyle(Button activeBtn) {
-        // Reset style tất cả các nút
         resetStyle(btnDashboard);
         resetStyle(btnPOS);
         resetStyle(btnTable);
         resetStyle(btnMenu);
         resetStyle(btnCustomers);
-        resetStyle(btnStaff);      // [QUAN TRỌNG] Reset cả nút Staff
+        resetStyle(btnStaff);
         resetStyle(btnPromotion);
         resetStyle(btnReports);
 
-        // Set style active cho nút được chọn
         if (activeBtn != null) {
             activeBtn.getStyleClass().add("menu-btn-active");
         }
@@ -156,7 +160,7 @@ public class SidebarController {
     private void hideButton(Button btn) {
         if (btn != null) {
             btn.setVisible(false);
-            btn.setManaged(false); // Xóa khỏi layout flow để không chiếm chỗ trống
+            btn.setManaged(false);
         }
     }
 }

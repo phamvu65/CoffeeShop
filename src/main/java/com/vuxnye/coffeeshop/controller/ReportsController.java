@@ -3,6 +3,7 @@ package com.vuxnye.coffeeshop.controller;
 import com.vuxnye.coffeeshop.dao.ReceiptDAO;
 import com.vuxnye.coffeeshop.dao.ReportDAO;
 import com.vuxnye.coffeeshop.model.Receipt;
+import com.vuxnye.coffeeshop.util.Refreshable; // [1] Import Interface
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
@@ -15,7 +16,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-public class ReportsController {
+// [2] Implements Refreshable để Sidebar gọi được
+public class ReportsController implements Refreshable {
 
     // --- CHART COMPONENTS ---
     @FXML private PieChart pieChart;
@@ -44,23 +46,30 @@ public class ReportsController {
 
     @FXML
     public void initialize() {
-        // 1. Cấu hình Biểu đồ
         // Tắt animation để tránh lỗi hiển thị cột/trục
         barChart.setAnimated(false);
-        // Ép trục X thẳng (nếu cần thiết, dù FXML đã set -15)
-        // barChart.getXAxis().setTickLabelRotation(0);
 
-        // Load dữ liệu biểu đồ
+        // Cấu hình Bảng Lịch sử
+        setupHistoryTable();
+        setupFilter();
+
+        // [QUAN TRỌNG] Gọi refreshData() thay vì load từng cái lẻ tẻ
+        refreshData();
+    }
+
+    // [3] Override hàm từ Interface
+    @Override
+    public void refreshData() {
+        // Load lại Biểu đồ & Chỉ số
         loadPieChart();
         loadBarChart();
         loadFinancialStats();
 
-        // 2. Cấu hình Bảng Lịch sử
-        setupHistoryTable();
-        setupFilter();
-
-        // Mặc định load dữ liệu "Hôm nay" khi mở lên
-        loadHistoryData(LocalDate.now(), LocalDate.now());
+        // Reset bộ lọc về "Hôm nay" và load lại bảng
+        if (cbTimeFilter != null) {
+            cbTimeFilter.getSelectionModel().selectFirst();
+            loadHistoryData(LocalDate.now(), LocalDate.now());
+        }
     }
 
     // =========================================================================
@@ -76,11 +85,9 @@ public class ReportsController {
             PieChart.Data slice = new PieChart.Data(entry.getKey(), entry.getValue());
             pieChart.getData().add(slice);
 
-            // Set màu sắc
             String color = COLORS[i % COLORS.length];
             slice.getNode().setStyle("-fx-pie-color: " + color + ";");
 
-            // Thêm Tooltip
             String msg = String.format("%s: %,.0f đ", entry.getKey(), entry.getValue());
             Tooltip.install(slice.getNode(), new Tooltip(msg));
             i++;
@@ -89,10 +96,6 @@ public class ReportsController {
 
     private void loadBarChart() {
         Map<String, Integer> data = reportDAO.getTopSellingProducts();
-
-        // Debug
-        System.out.println("--- DEBUG BARCHART ---");
-        System.out.println("Số lượng sản phẩm lấy được: " + data.size());
 
         if (data.isEmpty()) return;
 
@@ -106,13 +109,9 @@ public class ReportsController {
         barChart.getData().clear();
         barChart.getData().add(series);
 
-        // Style cột & Tooltip
         for (XYChart.Data<String, Number> d : series.getData()) {
             if (d.getNode() != null) {
-                // Tô màu tím
                 d.getNode().setStyle("-fx-bar-fill: #8E78FF;");
-
-                // Tooltip chi tiết
                 String text = d.getXValue() + "\nĐã bán: " + d.getYValue() + " ly";
                 Tooltip t = new Tooltip(text);
                 t.setStyle("-fx-font-size: 14px;");
@@ -123,8 +122,8 @@ public class ReportsController {
 
     private void loadFinancialStats() {
         double totalRevenue = reportDAO.getTotalRevenue();
-        double cogs = totalRevenue * 0.35; // Giá vốn 35%
-        double profit = totalRevenue * 0.65; // Lợi nhuận 65%
+        double cogs = totalRevenue * 0.35;
+        double profit = totalRevenue * 0.65;
 
         lblTotalRevenue.setText(String.format("%,.0f đ", totalRevenue));
         lblCOGS.setText(String.format("%,.0f đ", cogs));
@@ -136,21 +135,15 @@ public class ReportsController {
     // =========================================================================
 
     private void setupHistoryTable() {
-        // Gắn dữ liệu vào cột
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colCustomer.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         colPayment.setCellValueFactory(new PropertyValueFactory<>("paymentMethod"));
 
-        // --- [SỬA ĐOẠN NÀY] ---
-        // CŨ (Gây lỗi): colDate.setCellValueFactory(new PropertyValueFactory<>("formattedDate"));
-
-        // MỚI (Sửa lỗi): Gọi trực tiếp hàm getFormattedDate() thông qua Lambda
+        // Sử dụng Lambda để tránh lỗi Reflection
         colDate.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleStringProperty(cellData.getValue().getFormattedDate())
         );
-        // ----------------------
 
-        // Format cột tiền tệ (Tổng tiền)
         colTotal.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
         colTotal.setCellFactory(tc -> new TableCell<>() {
             @Override
@@ -166,17 +159,11 @@ public class ReportsController {
         });
     }
     private void setupFilter() {
-        // Các tùy chọn lọc
         cbTimeFilter.setItems(FXCollections.observableArrayList(
-                "Hôm nay",
-                "Hôm qua",
-                "7 ngày qua",
-                "Tháng này",
-                "Tháng trước"
+                "Hôm nay", "Hôm qua", "7 ngày qua", "Tháng này", "Tháng trước"
         ));
-        cbTimeFilter.getSelectionModel().selectFirst(); // Mặc định chọn "Hôm nay"
+        cbTimeFilter.getSelectionModel().selectFirst();
 
-        // Xử lý sự kiện khi chọn filter
         cbTimeFilter.setOnAction(e -> {
             String selected = cbTimeFilter.getValue();
             if (selected == null) return;
@@ -186,21 +173,12 @@ public class ReportsController {
             LocalDate to = today;
 
             switch (selected) {
-                case "Hôm nay":
-                    from = today;
-                    to = today;
-                    break;
-                case "Hôm qua":
-                    from = today.minusDays(1);
-                    to = today.minusDays(1);
-                    break;
-                case "7 ngày qua":
-                    from = today.minusDays(6);
-                    to = today;
-                    break;
+                case "Hôm nay": from = today; to = today; break;
+                case "Hôm qua": from = today.minusDays(1); to = today.minusDays(1); break;
+                case "7 ngày qua": from = today.minusDays(6); to = today; break;
                 case "Tháng này":
-                    from = today.withDayOfMonth(1); // Ngày 1
-                    to = today.withDayOfMonth(today.lengthOfMonth()); // Ngày cuối tháng
+                    from = today.withDayOfMonth(1);
+                    to = today.withDayOfMonth(today.lengthOfMonth());
                     break;
                 case "Tháng trước":
                     LocalDate lastMonth = today.minusMonths(1);

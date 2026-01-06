@@ -12,7 +12,7 @@ public class ViewManager {
     private static ViewManager instance;
     private BorderPane mainBorderPane;
 
-    // Bộ nhớ đệm lưu trữ các view đã load (Key: đường dẫn FXML, Value: giao diện)
+    // Bộ nhớ đệm lưu trữ các view đã load
     private final Map<String, Parent> viewCache = new HashMap<>();
 
     private ViewManager() {}
@@ -28,41 +28,56 @@ public class ViewManager {
         this.mainBorderPane = pane;
     }
 
-    public void switchView(String fxmlPath) {
+    /**
+     * Chuyển đổi giao diện và trả về Controller tương ứng
+     * @param fxmlPath Đường dẫn file FXML
+     * @return Object (Controller của view đó) hoặc null nếu lỗi
+     */
+    public Object switchView(String fxmlPath) {
         if (mainBorderPane == null) {
             System.err.println("❌ Lỗi: MainBorderPane chưa được khởi tạo!");
-            return;
+            return null;
         }
 
         try {
             Parent viewNode;
+            Object controller;
 
-            // Kiểm tra xem view này đã có trong cache chưa
+            // 1. Kiểm tra cache
             if (viewCache.containsKey(fxmlPath)) {
-                // Nếu có rồi -> Lấy ra dùng lại ngay (Siêu nhanh)
+                // Lấy view từ cache
                 viewNode = viewCache.get(fxmlPath);
+
+                // [MẸO] Lấy controller đã được gắn vào view từ lần load trước
+                controller = viewNode.getUserData();
             } else {
-                // Nếu chưa có -> Load từ file FXML
+                // 2. Load mới từ FXML
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
                 viewNode = loader.load();
+                controller = loader.getController(); // Lấy controller mới
 
-                // Lưu vào cache để lần sau dùng lại
+                // [MẸO] Gắn controller vào view để lần sau lấy lại được
+                if (controller != null) {
+                    viewNode.setUserData(controller);
+                }
+
+                // Lưu vào cache
                 viewCache.put(fxmlPath, viewNode);
             }
 
-            // Hiển thị lên màn hình chính
+            // 3. Hiển thị lên màn hình
             mainBorderPane.setCenter(viewNode);
+
+            // 4. Trả về controller cho SidebarController sử dụng (để refresh data)
+            return controller;
 
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("❌ Lỗi: Không tìm thấy file FXML tại: " + fxmlPath);
+            return null;
         }
     }
 
-    /**
-     * [QUAN TRỌNG] Phương thức bạn đang thiếu
-     * Xóa sạch bộ nhớ đệm khi người dùng đăng xuất.
-     */
     public void clearCache() {
         viewCache.clear();
         System.out.println("♻️ Đã xóa cache giao diện.");

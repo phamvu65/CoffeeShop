@@ -6,68 +6,71 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 
-<VBox prefHeight="800.0" prefWidth="240.0" spacing="10.0" styleClass="sidebar" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vuxnye.coffeeshop.controller.SidebarController">
+<VBox prefHeight="800.0" prefWidth="260.0" spacing="10.0" styleClass="sidebar" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vuxnye.coffeeshop.controller.SidebarController">
     <children>
-        <HBox alignment="CENTER_LEFT" spacing="10.0">
+
+        <HBox alignment="CENTER_LEFT" spacing="15.0">
             <padding>
                 <Insets bottom="20.0" left="25.0" right="20.0" top="30.0" />
             </padding>
             <children>
-                <Pane style="-fx-background-color: #4A90E2; -fx-background-radius: 10; -fx-min-width: 35; -fx-min-height: 35;">
+                <StackPane style="-fx-background-color: #4A90E2; -fx-background-radius: 10; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;">
                     <children>
-                        <SVGPath content="M18.5,4h-13C4.1,4,3,5.1,3,6.5v9C3,16.9,4.1,18,5.5,18h13c1.4,0,2.5-1.1,2.5-2.5v-9C21,5.1,19.9,4,18.5,4z" fill="WHITE" layoutX="5" layoutY="5" scaleX="0.8" scaleY="0.8"/>
+                        <SVGPath content="M450-80v-187q-47 24-94 46.5T256-198q-60.47 0-113.73-25.5Q89-249 40-282q41-40 89.5-68.5T235-384q-78-52-115.5-138T73-702q78-2 149.5 26.5T350-592q-2-9-2-18.33V-629q0-91 37.5-173T472-960q59 72 99.5 155T612-629q0 9.33-.5 18.67Q611-601 610-592q56-55 128-83.5T888-702q-10 94-47 179.5T726-384q57 5 105 34t89 68q-49 34-102.5 59T704-198q-52.88 0-99.94-22.5Q557-243 510-267v187h-60Zm-52-295q-13-46-32-90t-51-79q-32-33-73.5-52.5T155-630q12 47 30.5 90.5T237-461q32 34 74 53.5t87 32.5ZM255.5-258q28.5 0 54.5-10t52-22q-26-12-51.5-23.5T256-325q-29 0-54.5 10.5T150-292q24 14 50.5 24t55 10ZM482-380q36-56 53-119.5T552-629q0-60.21-21.5-115.1Q509-799 480-850q-30 51-51 105.9-21 54.89-21 115.1 0 66 21 128.5T482-380Zm81 5q45-13 86.5-33t73.5-53q32-35 50.5-79t31.5-90q-45 14-86.5 33.5T645-544q-34 35-52.5 78.5T563-375Zm141 117q28 0 54-10t52-22q-26-12-51.5-23.5T704-325q-29 0-54.5 11.5T598-290q26 12 52 22t54 10ZM398-375Zm-36 85Zm120-90Zm81 5Zm35 85Z"
+                                 fill="WHITE" scaleX="0.035" scaleY="0.035" />
                     </children>
-                </Pane>
-                <Label styleClass="logo-text" text="BaristaFlow" />
+                </StackPane>
+                <Label minWidth="-Infinity" styleClass="logo-text" text="BaristaFlow" />
             </children>
         </HBox>
 
-        <Button fx:id="btnDashboard" onAction="#handleDashboard" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Tổng quan">
+        <Button fx:id="btnDashboard" layoutX="10.0" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleDashboard" styleClass="menu-btn" text="Tổng quan">
             <graphic>
                 <SVGPath content="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" style="-fx-fill: #94A3B8;" />
             </graphic>
         </Button>
 
-        <Button fx:id="btnPOS" onAction="#handlePOS" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Bán hàng (POS)">
+        <Button fx:id="btnPOS" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#handlePOS" styleClass="menu-btn" text="Bán hàng (POS)">
             <graphic>
                 <SVGPath content="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z" style="-fx-fill: #94A3B8;" />
             </graphic>
         </Button>
 
-        <Button fx:id="btnTable" onAction="#handleTable" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Quản lý bàn">
+        <Button fx:id="btnTable" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleTable" styleClass="menu-btn" text="Quản lý bàn">
             <graphic>
-                <SVGPath content="M4 6h16v12H4z" style="-fx-fill: #94A3B8;" scaleX="0.8" scaleY="0.8"/>
+                <SVGPath content="M4 18h16v2H4zm6.5-3h3l1 2h-5l1-2zm5.66-1.75l1.16-2.32C18.29 9.95 19 8.81 19 7.5 19 4.46 16.54 2 13.5 2S8 4.46 8 7.5c0 1.31.71 2.45 1.68 3.43l1.16 2.32c.09.19.29.3.5.3h3.32c.21 0 .41-.11.5-.3zM13.5 4c1.93 0 3.5 1.57 3.5 3.5 0 .95-.38 1.81-1 2.44V12h-5V9.94c-.62-.63-1-1.49-1-2.44 0-1.93 1.57-3.5 3.5-3.5z" style="-fx-fill: #94A3B8;" />
             </graphic>
         </Button>
 
-        <Button fx:id="btnMenu" onAction="#handleMenu" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Thực đơn">
+        <Button fx:id="btnMenu" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleMenu" styleClass="menu-btn" text="Thực đơn">
             <graphic>
-                <SVGPath content="M8 6h8v2H8z" style="-fx-fill: #94A3B8;" />
+                <SVGPath content="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 18.4 1 19.5V6c1.1-.35 2.33-.5 3.5-.5 1.95 0 4.05.4 5.5 1.5 1.45-1.1 3.55-1.5 5.5-1.5S19.9 4.9 21 6v12.5zM17.5 13c-1.2 0-2.5-.45-3.5-1.25V8.5c1.5.95 2.55 1.5 3.5 1.5 1.2 0 2.5-.45 3.5-1.25v3.25c-1.5.95-2.55 1.5-3.5 1.5zm0-2c-1.2 0-2.5-.45-3.5-1.25V6.5c1.5.95 2.55 1.5 3.5 1.5 1.2 0 2.5-.45 3.5-1.25v3.25c-1.5.95-2.55 1.5-3.5 1.5z" style="-fx-fill: #94A3B8;" />
             </graphic>
         </Button>
 
-        <Button fx:id="btnCustomers" onAction="#handleCustomers" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Khách hàng">
+        <Button fx:id="btnCustomers" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleCustomers" styleClass="menu-btn" text="Khách hàng">
             <graphic>
                 <SVGPath content="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" style="-fx-fill: #94A3B8;" />
             </graphic>
         </Button>
 
-        <Button fx:id="btnStaff" onAction="#handleStaff" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Nhân viên">
+        <Button fx:id="btnStaff" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleStaff" styleClass="menu-btn" text="Nhân viên">
             <graphic>
                 <SVGPath content="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" style="-fx-fill: #94A3B8;" />
             </graphic>
         </Button>
 
-        <Button fx:id="btnPromotion" onAction="#handlePromotion" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Khuyến mãi">
+        <Button fx:id="btnPromotion" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#handlePromotion" styleClass="menu-btn" text="Khuyến mãi">
             <graphic>
-                <SVGPath content="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" style="-fx-fill: #94A3B8;" scaleX="0.9" scaleY="0.9" />
+                <SVGPath content="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 7z" scaleX="0.9" scaleY="0.9" style="-fx-fill: #94A3B8;" />
             </graphic>
         </Button>
 
-        <Button fx:id="btnReports" onAction="#handleReports" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Báo cáo">
+        <Button fx:id="btnReports" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleReports" styleClass="menu-btn" text="Báo cáo">
             <graphic>
                 <SVGPath content="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" style="-fx-fill: #94A3B8;" />
             </graphic>
@@ -83,14 +86,14 @@
                 <Separator />
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
-                        <Pane style="-fx-background-color: #E2E8F0; -fx-background-radius: 50; -fx-min-width: 30; -fx-min-height: 30;">
+                        <StackPane style="-fx-background-color: #E2E8F0; -fx-background-radius: 50; -fx-min-width: 35; -fx-min-height: 35; -fx-max-width: 35; -fx-max-height: 35;">
                             <children>
-                                <Label layoutX="10.0" layoutY="6.0" style="-fx-font-weight: bold; -fx-text-fill: #64748B;" text="A" />
+                                <Label style="-fx-font-weight: bold; -fx-text-fill: #64748B;" text="A" />
                             </children>
-                        </Pane>
+                        </StackPane>
                         <VBox>
-                            <Label fx:id="lblUser" style="-fx-font-weight: bold; -fx-font-size: 13px;" text="Admin" />
-                            <Label onMouseClicked="#handleLogout" style="-fx-text-fill: #EF4444; -fx-font-size: 11px; -fx-cursor: hand;" text="Đăng xuất" />
+                            <Label fx:id="lblUser" minWidth="-Infinity" style="-fx-font-weight: bold; -fx-font-size: 13px;" text="Admin" />
+                            <Label minWidth="-Infinity" onMouseClicked="#handleLogout" style="-fx-text-fill: #EF4444; -fx-font-size: 11px; -fx-cursor: hand;" text="Đăng xuất" />
                         </VBox>
                     </children>
                 </HBox>

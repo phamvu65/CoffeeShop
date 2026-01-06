@@ -2,6 +2,7 @@ package com.vuxnye.coffeeshop.controller;
 
 import com.vuxnye.coffeeshop.dao.CustomerDAO;
 import com.vuxnye.coffeeshop.model.Customer;
+import com.vuxnye.coffeeshop.util.Refreshable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -16,7 +17,7 @@ import javafx.scene.shape.SVGPath;
 
 import java.util.Optional;
 
-public class CustomersController {
+public class CustomersController implements Refreshable {
 
     @FXML private TextField txtSearch;
     @FXML private TableView<Customer> tblCustomers;
@@ -41,6 +42,7 @@ public class CustomersController {
     }
 
     // [QUAN TRỌNG] Hàm này được thêm lại để sửa lỗi của bạn
+    @Override
     public void refreshData() {
         masterData.setAll(customerDAO.getAllCustomers());
     }
