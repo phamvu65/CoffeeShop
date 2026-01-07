@@ -287,7 +287,7 @@ public class POSController {
             return;
         }
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vuxnye/coffeeshop/view/Checkout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Checkout.fxml"));
             Parent root = loader.load();
 
             double subtotal = cartList.stream().mapToDouble(CartItem::getTotal).sum();
@@ -353,7 +353,7 @@ public class POSController {
     @FXML
     public void handleLogout(javafx.scene.input.MouseEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vuxnye/coffeeshop/view/Login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
             Stage stage = (Stage) lblUser.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
             stage.centerOnScreen();

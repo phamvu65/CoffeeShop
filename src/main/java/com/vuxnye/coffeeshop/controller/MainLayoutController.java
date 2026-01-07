@@ -38,9 +38,9 @@ public class MainLayoutController {
         // Nếu sidebarController đã xử lý logic này rồi thì có thể bỏ qua,
         // nhưng khai báo ở đây cho chắc chắn.
         if (user.getRoleId() == RoleEnum.ADMIN.getId()) {
-            ViewManager.getInstance().switchView("/com/vuxnye/coffeeshop/view/Dashboard.fxml");
+            ViewManager.getInstance().switchView("/view/Dashboard.fxml");
         } else {
-            ViewManager.getInstance().switchView("/com/vuxnye/coffeeshop/view/POS.fxml");
+            ViewManager.getInstance().switchView("/view/POS.fxml");
         }
     }
 }

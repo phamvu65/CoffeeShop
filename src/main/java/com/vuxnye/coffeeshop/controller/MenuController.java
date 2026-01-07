@@ -343,7 +343,7 @@ public class MenuController {
 
     private void openModal(Product product) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vuxnye/coffeeshop/view/ProductForm.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ProductForm.fxml"));
             Parent root = loader.load();
             ProductFormController controller = loader.getController();
             controller.setProductData(product);

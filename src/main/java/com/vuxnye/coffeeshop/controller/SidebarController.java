@@ -81,42 +81,42 @@ public class SidebarController {
 
     @FXML
     public void handleDashboard() {
-        navigate("/com/vuxnye/coffeeshop/view/Dashboard.fxml", btnDashboard);
+        navigate("/view/Dashboard.fxml", btnDashboard);
     }
 
     @FXML
     public void handlePOS() {
-        navigate("/com/vuxnye/coffeeshop/view/POS.fxml", btnPOS);
+        navigate("/view/POS.fxml", btnPOS);
     }
 
     @FXML
     public void handleTable() {
-        navigate("/com/vuxnye/coffeeshop/view/TableView.fxml", btnTable);
+        navigate("/view/TableView.fxml", btnTable);
     }
 
     @FXML
     public void handleMenu() {
-        navigate("/com/vuxnye/coffeeshop/view/Menu.fxml", btnMenu);
+        navigate("/view/Menu.fxml", btnMenu);
     }
 
     @FXML
     public void handleCustomers() {
-        navigate("/com/vuxnye/coffeeshop/view/Customers.fxml", btnCustomers);
+        navigate("/view/Customers.fxml", btnCustomers);
     }
 
     @FXML
     public void handleStaff() {
-        navigate("/com/vuxnye/coffeeshop/view/Staff.fxml", btnStaff);
+        navigate("/view/Staff.fxml", btnStaff);
     }
 
     @FXML
     public void handlePromotion() {
-        navigate("/com/vuxnye/coffeeshop/view/Promotions.fxml", btnPromotion);
+        navigate("/view/Promotions.fxml", btnPromotion);
     }
 
     @FXML
     public void handleReports() {
-        navigate("/com/vuxnye/coffeeshop/view/Reports.fxml", btnReports);
+        navigate("/view/Reports.fxml", btnReports);
     }
 
     @FXML
@@ -125,7 +125,7 @@ public class SidebarController {
             // Reset cache view
             ViewManager.getInstance().clearCache();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vuxnye/coffeeshop/view/Login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
             Stage stage = (Stage) lblUser.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
             stage.centerOnScreen();

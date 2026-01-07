@@ -217,7 +217,7 @@ public class PromotionsController {
 
     private void openModal(Promotion p) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/vuxnye/coffeeshop/view/PromotionForm.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PromotionForm.fxml"));
             Parent root = loader.load();
             PromotionFormController controller = loader.getController();
             controller.setPromoData(p);
