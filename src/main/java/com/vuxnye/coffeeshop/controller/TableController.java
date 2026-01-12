@@ -2,6 +2,7 @@ package com.vuxnye.coffeeshop.controller;
 
 import com.vuxnye.coffeeshop.dao.TableDAO;
 import com.vuxnye.coffeeshop.model.Table;
+import com.vuxnye.coffeeshop.util.Refreshable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -14,7 +15,7 @@ import javafx.scene.shape.SVGPath;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TableController {
+public class TableController implements Refreshable {
 
     @FXML private FlowPane flowTables;
     @FXML private Button btnAll, btnEmpty, btnServing; // Đã bỏ btnReserved
@@ -73,6 +74,7 @@ public class TableController {
             statusText = "Bàn trống";
             textColor = "#64748B"; // Màu chữ xám
         }
+
 
         // Icon Box (Hình tròn chứa icon)
         VBox iconBox = new VBox();
@@ -145,5 +147,10 @@ public class TableController {
 
     private void addActiveStyle(Button btn) {
         if (btn != null) btn.getStyleClass().add("btn-filter-active");
+    }
+
+    @Override
+    public void refreshData() {
+        loadData();
     }
 }

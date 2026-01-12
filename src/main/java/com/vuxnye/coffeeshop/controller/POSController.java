@@ -5,6 +5,7 @@ import com.vuxnye.coffeeshop.dao.ProductDAO;
 import com.vuxnye.coffeeshop.dao.ReceiptDAO;
 import com.vuxnye.coffeeshop.dao.TableDAO;
 import com.vuxnye.coffeeshop.model.*;
+import com.vuxnye.coffeeshop.util.Refreshable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -26,7 +27,7 @@ import javafx.util.StringConverter;
 import java.io.IOException;
 import java.util.List;
 
-public class POSController {
+public class POSController implements Refreshable {
 
     @FXML private TextField txtSearch;
     @FXML private GridPane gridProducts;
@@ -365,5 +366,10 @@ public class POSController {
         alert.setTitle(title);
         alert.setContentText(content);
         alert.show();
+    }
+
+    @Override
+    public void refreshData() {
+        loadTables();
     }
 }

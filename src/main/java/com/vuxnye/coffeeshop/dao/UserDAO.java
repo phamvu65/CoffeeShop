@@ -9,7 +9,7 @@ import java.util.List;
 
 public class UserDAO {
 
-    // Tên bảng là 'users' (số nhiều)
+    // [SỬA] Tên bảng nên là số nhiều để tránh trùng keyword SQL
     private static final String TABLE_NAME = "user";
 
     public User checkLogin(String username, String password) {
@@ -49,7 +49,7 @@ public class UserDAO {
         return list;
     }
 
-    // [QUAN TRỌNG] Hàm map dữ liệu: Đọc từ cột 'hourly_rate'
+    // [QUAN TRỌNG] Map đầy đủ các cột mới (Email, Birthday, HourlyRate)
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
         return User.builder()
                 .id(rs.getInt("id"))
@@ -57,17 +57,20 @@ public class UserDAO {
                 .password(rs.getString("password"))
                 .fullname(rs.getString("fullname"))
                 .phone(rs.getString("phone"))
-                .email(rs.getString("email"))
+                .email(rs.getString("email"))           // [SỬA] Đọc email
+                .birthday(rs.getString("birthday"))     // [SỬA] Đọc ngày sinh
                 .gender(rs.getBoolean("gender"))
-                .hourlyRate(rs.getBigDecimal("hourly_rate")) // [SỬA] Đọc đúng tên cột trong DB
+                .hourlyRate(rs.getBigDecimal("hourly_rate"))
                 .roleId(rs.getInt("role_id"))
                 .isActive(rs.getBoolean("is_active"))
                 .build();
     }
 
-    // [QUAN TRỌNG] Thêm mới: Insert vào 'hourly_rate'
+    // [QUAN TRỌNG] Thêm mới: Phải Insert cả EMAIL và BIRTHDAY
     public void addUser(User u) {
-        String sql = "INSERT INTO " + TABLE_NAME + " (fullname, username, password, phone, gender, hourly_rate, role_id, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)";
+        // [SỬA] Bổ sung email, birthday vào câu lệnh INSERT
+        String sql = "INSERT INTO " + TABLE_NAME + " (fullname, username, password, phone, email, birthday, gender, hourly_rate, role_id, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -75,26 +78,27 @@ public class UserDAO {
             stmt.setString(2, u.getUsername());
             stmt.setString(3, u.getPassword());
             stmt.setString(4, u.getPhone());
+            stmt.setString(5, u.getEmail());       // [SỬA] Lưu Email
+            stmt.setString(6, u.getBirthday());    // [SỬA] Lưu Ngày sinh
 
-            // Xử lý null cho gender
-            stmt.setBoolean(5, u.getGender() != null && u.getGender());
+            // Xử lý null cho gender (tránh lỗi NullPointerException)
+            stmt.setBoolean(7, u.getGender() != null && u.getGender());
 
-            // [SỬA] Insert vào hourly_rate
-            stmt.setBigDecimal(6, u.getHourlyRate());
+            stmt.setBigDecimal(8, u.getHourlyRate());
+            stmt.setInt(9, u.getRoleId());
 
-            stmt.setInt(7, u.getRoleId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    // [QUAN TRỌNG] Cập nhật: Update cột 'hourly_rate'
+    // [QUAN TRỌNG] Cập nhật: Cũng phải Update cả EMAIL và BIRTHDAY
     public void updateUser(User u) {
         boolean updatePass = u.getPassword() != null && !u.getPassword().isEmpty();
 
-        // SQL Update sửa 'salary' thành 'hourly_rate'
-        String sql = "UPDATE " + TABLE_NAME + " SET fullname=?, phone=?, gender=?, hourly_rate=?, username=?, role_id=?"
+        // [SỬA] Bổ sung email=?, birthday=?
+        String sql = "UPDATE " + TABLE_NAME + " SET fullname=?, phone=?, email=?, birthday=?, gender=?, hourly_rate=?, username=?, role_id=?"
                 + (updatePass ? ", password=?" : "")
                 + " WHERE id=?";
 
@@ -103,15 +107,14 @@ public class UserDAO {
 
             stmt.setString(1, u.getFullname());
             stmt.setString(2, u.getPhone());
-            stmt.setBoolean(3, u.getGender() != null && u.getGender());
+            stmt.setString(3, u.getEmail());        // [SỬA] Update Email
+            stmt.setString(4, u.getBirthday());     // [SỬA] Update Ngày sinh
+            stmt.setBoolean(5, u.getGender() != null && u.getGender());
+            stmt.setBigDecimal(6, u.getHourlyRate());
+            stmt.setString(7, u.getUsername());
+            stmt.setInt(8, u.getRoleId());
 
-            // [SỬA] Update vào hourly_rate
-            stmt.setBigDecimal(4, u.getHourlyRate());
-
-            stmt.setString(5, u.getUsername());
-            stmt.setInt(6, u.getRoleId());
-
-            int paramIndex = 7;
+            int paramIndex = 9;
             if (updatePass) {
                 stmt.setString(paramIndex++, u.getPassword());
             }
@@ -144,6 +147,7 @@ public class UserDAO {
     }
 
     public boolean checkEmailExists(String email) {
+        // [LƯU Ý] Hàm này dùng cho chức năng Quên mật khẩu
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

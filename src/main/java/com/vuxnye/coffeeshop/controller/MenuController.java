@@ -48,7 +48,7 @@ public class MenuController {
 
     // Biến quản lý phân trang & Lọc
     private int currentPage = 1;
-    private final int itemsPerPage = 8; // Số món mỗi trang
+    private final int itemsPerPage = 10; // Số món mỗi trang
     private int totalPages = 1;
     private int currentCategoryId = 0; // 0 = Tất cả
 

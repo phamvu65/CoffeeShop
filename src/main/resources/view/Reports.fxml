@@ -43,7 +43,7 @@
                                 <Label style="-fx-font-weight: 900; -fx-text-fill: #1e293b; -fx-font-size: 16px;" text="Top 5 sản phẩm bán chạy" />
                                 <BarChart fx:id="barChart" animated="false" horizontalGridLinesVisible="false" legendVisible="false" minHeight="300.0" styleClass="custom-chart" verticalGridLinesVisible="false">
                                     <xAxis>
-                                        <CategoryAxis fx:id="xAxis" label="Sản phẩm" side="BOTTOM" tickLabelRotation="-15" />
+                                        <CategoryAxis fx:id="xAxis" label="Sản phẩm" side="BOTTOM" tickLabelRotation="0" />
                                     </xAxis>
                                     <yAxis>
                                         <NumberAxis label="Số lượng" side="LEFT" />

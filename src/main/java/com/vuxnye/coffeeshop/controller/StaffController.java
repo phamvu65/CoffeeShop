@@ -29,9 +29,10 @@ public class StaffController {
     @FXML private TableColumn<User, String> colName;
     @FXML private TableColumn<User, String> colGender;
     @FXML private TableColumn<User, String> colPhone;
+    @FXML private TableColumn<User, String> colEmail; // [MỚI] Thêm cột Email
     @FXML private TableColumn<User, String> colUsername;
-    @FXML private TableColumn<User, String> colRole; // Sẽ style giống colCode/colStatus
-    @FXML private TableColumn<User, String> colHourlyRate; // Sẽ style giống colValue
+    @FXML private TableColumn<User, String> colRole;
+    @FXML private TableColumn<User, String> colHourlyRate;
     @FXML private TableColumn<User, Void> colAction;
 
     // --- Data & DAO ---
@@ -39,11 +40,9 @@ public class StaffController {
     private final ObservableList<User> masterData = FXCollections.observableArrayList();
     private FilteredList<User> filteredData;
 
-    // --- SVG ICONS (Lấy từ mẫu của bạn) ---
+    // --- SVG ICONS ---
     private final String SVG_EDIT = "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z";
     private final String SVG_DELETE = "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z";
-    // private final String SVG_PLAY = "M8 5v14l11-7z"; // Tạm chưa dùng cho nhân viên
-    // private final String SVG_PAUSE = "M6 19h4V5H6v14zm8-14v14h4V5h-4z";
 
     @FXML
     public void initialize() {
@@ -58,14 +57,15 @@ public class StaffController {
                 String lower = newVal.toLowerCase();
                 return user.getFullname().toLowerCase().contains(lower)
                         || user.getUsername().toLowerCase().contains(lower)
-                        || (user.getPhone() != null && user.getPhone().contains(lower));
+                        || (user.getPhone() != null && user.getPhone().contains(lower))
+                        || (user.getEmail() != null && user.getEmail().toLowerCase().contains(lower)); // [MỚI] Tìm kiếm theo cả Email
             });
         });
         tableStaff.setItems(filteredData);
     }
 
     private void setupTable() {
-        // 1. CỘT TÊN (Đậm, màu tối - Giống colName mẫu)
+        // 1. CỘT TÊN
         colName.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getFullname()));
         colName.setCellFactory(tc -> new TableCell<>() {
             @Override protected void updateItem(String item, boolean empty) {
@@ -75,9 +75,12 @@ public class StaffController {
             }
         });
 
-        // 2. CÁC CỘT THÔNG THƯỜNG
+        // 2. CÁC CỘT THÔNG TIN CƠ BẢN
         colUsername.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getUsername()));
         colPhone.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPhone()));
+
+        // [MỚI] Setup cột Email
+        colEmail.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmail()));
 
         colGender.setCellValueFactory(data -> {
             Boolean gender = data.getValue().getGender();
@@ -85,7 +88,7 @@ public class StaffController {
         });
         colGender.setStyle("-fx-alignment: CENTER;");
 
-        // 3. CỘT VAI TRÒ (Badge màu - Giống colCode/colStatus mẫu)
+        // 3. CỘT VAI TRÒ
         colRole.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getRoleName()));
         colRole.setCellFactory(tc -> new TableCell<>() {
             @Override protected void updateItem(String item, boolean empty) {
@@ -95,14 +98,11 @@ public class StaffController {
                 } else {
                     User u = getTableView().getItems().get(getIndex());
                     Label lbl = new Label(item);
-
-                    // Logic màu sắc: Admin màu Tím, Staff màu Xanh
                     if (u.getRoleId() == RoleEnum.ADMIN.getId()) {
                         lbl.setStyle("-fx-font-weight: bold; -fx-text-fill: #7E22CE; -fx-font-size: 11px; -fx-background-color: #F3E8FF; -fx-padding: 2 8; -fx-background-radius: 4;");
                     } else {
                         lbl.setStyle("-fx-font-weight: bold; -fx-text-fill: #1D4ED8; -fx-font-size: 11px; -fx-background-color: #DBEAFE; -fx-padding: 2 8; -fx-background-radius: 4;");
                     }
-
                     setGraphic(lbl);
                     setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                     setAlignment(Pos.CENTER);
@@ -110,7 +110,7 @@ public class StaffController {
             }
         });
 
-        // 4. CỘT LƯƠNG/GIỜ (Đậm, căn phải - Giống colValue mẫu)
+        // 4. CỘT LƯƠNG
         colHourlyRate.setCellValueFactory(data -> {
             BigDecimal rate = data.getValue().getHourlyRate();
             if (rate == null) rate = BigDecimal.ZERO;
@@ -125,30 +125,24 @@ public class StaffController {
             }
         });
 
-        // 5. CỘT THAO TÁC (Nút tròn, hiệu ứng hover - Giống colAction mẫu)
+        // 5. CỘT THAO TÁC
         colAction.setCellFactory(tc -> new TableCell<>() {
             private final Button btnEdit = new Button();
             private final Button btnDelete = new Button();
             private final HBox pane = new HBox(8, btnEdit, btnDelete);
 
             {
-                // Style cơ bản cho nút tròn 30px
                 String btnStyle = "-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 50%; " +
                         "-fx-cursor: hand; -fx-padding: 0; " +
                         "-fx-min-width: 32px; -fx-min-height: 32px; " +
                         "-fx-max-width: 32px; -fx-max-height: 32px;";
-
                 btnEdit.setStyle(btnStyle);
                 btnDelete.setStyle(btnStyle);
+                setupHover(btnEdit, "#eff6ff");
+                setupHover(btnDelete, "#fef2f2");
 
-                // Setup hiệu ứng Hover
-                setupHover(btnEdit, "#eff6ff"); // Hover xanh nhạt
-                setupHover(btnDelete, "#fef2f2"); // Hover đỏ nhạt
-
-                // Sự kiện
                 btnEdit.setOnAction(e -> handleEdit(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> handleDelete(getTableView().getItems().get(getIndex())));
-
                 pane.setAlignment(Pos.CENTER);
             }
 
@@ -164,20 +158,16 @@ public class StaffController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    // Set Icon và Tooltip
-                    btnEdit.setGraphic(createSVG(SVG_EDIT, "#3b82f6")); // Icon Xanh
+                    btnEdit.setGraphic(createSVG(SVG_EDIT, "#3b82f6"));
                     btnEdit.setTooltip(new Tooltip("Chỉnh sửa"));
-
-                    btnDelete.setGraphic(createSVG(SVG_DELETE, "#ef4444")); // Icon Đỏ
+                    btnDelete.setGraphic(createSVG(SVG_DELETE, "#ef4444"));
                     btnDelete.setTooltip(new Tooltip("Xóa nhân viên"));
-
                     setGraphic(pane);
                 }
             }
         });
     }
 
-    // --- Helper tạo SVG ---
     private SVGPath createSVG(String content, String color) {
         SVGPath svg = new SVGPath();
         svg.setContent(content);
@@ -191,7 +181,6 @@ public class StaffController {
         masterData.setAll(userDAO.getAllActiveUsers());
     }
 
-    // --- BUTTON HANDLERS ---
     @FXML private void handleAddNew() { showStaffDialog(null); }
 
     private void handleEdit(User user) { showStaffDialog(user); }
@@ -206,7 +195,7 @@ public class StaffController {
         }
     }
 
-    // --- MODAL DIALOG (Giữ nguyên logic cũ nhưng code gọn lại) ---
+    // --- FORM DIALOG (ĐÃ CẬP NHẬT EMAIL) ---
     private void showStaffDialog(User user) {
         Dialog<User> dialog = new Dialog<>();
         dialog.setTitle(user == null ? "Thêm nhân viên" : "Cập nhật nhân viên");
@@ -222,33 +211,49 @@ public class StaffController {
         // Fields
         TextField txtFullname = new TextField(user != null ? user.getFullname() : "");
         TextField txtPhone = new TextField(user != null ? user.getPhone() : "");
+
+        // [MỚI] Thêm field Email vào Form
+        TextField txtEmail = new TextField(user != null ? user.getEmail() : "");
+        txtEmail.setPromptText("bắt buộc (để reset mật khẩu)");
+
         ComboBox<String> cbGender = new ComboBox<>();
         cbGender.getItems().addAll("Nam", "Nữ");
         cbGender.setValue(user != null && Boolean.TRUE.equals(user.getGender()) ? "Nam" : "Nữ");
+
         TextField txtRate = new TextField(user != null && user.getHourlyRate() != null ? String.valueOf(user.getHourlyRate().longValue()) : "25000");
+
         TextField txtUsername = new TextField(user != null ? user.getUsername() : "");
         if (user != null) txtUsername.setDisable(true);
+
         PasswordField txtPassword = new PasswordField();
         txtPassword.setPromptText("Để trống nếu không đổi...");
+
         ComboBox<RoleEnum> cbRole = new ComboBox<>();
         cbRole.getItems().addAll(RoleEnum.values());
         cbRole.setValue(user != null ? RoleEnum.fromId(user.getRoleId()) : RoleEnum.STAFF);
 
-        // Layout
+        // Layout - Thêm các dòng vào Grid
         grid.add(new Label("Họ tên (*):"), 0, 0);   grid.add(txtFullname, 1, 0);
-        grid.add(new Label("SĐT:"), 0, 1);          grid.add(txtPhone, 1, 1);
-        grid.add(new Label("Giới tính:"), 0, 2);    grid.add(cbGender, 1, 2);
-        grid.add(new Label("Lương/Giờ:"), 0, 3);    grid.add(txtRate, 1, 3);
-        grid.add(new Label("Username (*):"), 0, 4); grid.add(txtUsername, 1, 4);
-        grid.add(new Label("Mật khẩu:"), 0, 5);     grid.add(txtPassword, 1, 5);
-        grid.add(new Label("Chức vụ:"), 0, 6);      grid.add(cbRole, 1, 6);
+        grid.add(new Label("Email (*):"), 0, 1);    grid.add(txtEmail, 1, 1); // [MỚI]
+        grid.add(new Label("SĐT:"), 0, 2);          grid.add(txtPhone, 1, 2);
+        grid.add(new Label("Giới tính:"), 0, 3);    grid.add(cbGender, 1, 3);
+        grid.add(new Label("Lương/Giờ:"), 0, 4);    grid.add(txtRate, 1, 4);
+        grid.add(new Label("Username (*):"), 0, 5); grid.add(txtUsername, 1, 5);
+        grid.add(new Label("Mật khẩu:"), 0, 6);     grid.add(txtPassword, 1, 6);
+        grid.add(new Label("Chức vụ:"), 0, 7);      grid.add(cbRole, 1, 7);
 
         dialog.getDialogPane().setContent(grid);
 
         // Result Converter
         dialog.setResultConverter(btn -> {
             if (btn == saveType) {
-                if (txtFullname.getText().trim().isEmpty() || txtUsername.getText().trim().isEmpty()) return null;
+                // [MỚI] Validate thêm Email
+                if (txtFullname.getText().trim().isEmpty() ||
+                        txtUsername.getText().trim().isEmpty() ||
+                        txtEmail.getText().trim().isEmpty()) {
+                    return null;
+                }
+
                 BigDecimal rateVal;
                 try {
                     rateVal = new BigDecimal(txtRate.getText().trim().replaceAll("[^\\d]", ""));
@@ -257,6 +262,7 @@ public class StaffController {
                 return User.builder()
                         .id(user != null ? user.getId() : 0)
                         .fullname(txtFullname.getText().trim())
+                        .email(txtEmail.getText().trim()) // [MỚI] Lưu Email
                         .phone(txtPhone.getText().trim())
                         .gender(cbGender.getValue().equals("Nam"))
                         .hourlyRate(rateVal)
@@ -272,10 +278,18 @@ public class StaffController {
         dialog.showAndWait().ifPresent(u -> {
             try {
                 if (user == null) {
-                    if (userDAO.isUsernameExists(u.getUsername())) showAlert("Lỗi", "Username đã tồn tại!");
-                    else { userDAO.addUser(u); refreshData(); }
+                    // Check trùng username và email
+                    if (userDAO.isUsernameExists(u.getUsername())) {
+                        showAlert("Lỗi", "Username đã tồn tại!");
+                    } else if (userDAO.checkEmailExists(u.getEmail())) { // [MỚI] Check trùng Email
+                        showAlert("Lỗi", "Email này đã được sử dụng!");
+                    } else {
+                        userDAO.addUser(u);
+                        refreshData();
+                    }
                 } else {
-                    userDAO.updateUser(u); refreshData();
+                    userDAO.updateUser(u);
+                    refreshData();
                 }
             } catch (Exception e) { showAlert("Lỗi", e.getMessage()); }
         });

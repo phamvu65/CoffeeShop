@@ -13,8 +13,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.shape.SVGPath?>
-
 <?import javafx.scene.layout.Region?>
+
 <AnchorPane prefHeight="768.0" prefWidth="1024.0" style="-fx-background-color: #F1F5F9;" styleClass="root" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vuxnye.coffeeshop.controller.LoginController">
     <children>
         <StackPane layoutX="312.0" layoutY="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -72,7 +72,7 @@
                                                 <HBox fx:id="boxUsername" alignment="CENTER_LEFT" prefHeight="50.0" styleClass="input-group">
                                                     <children>
                                                         <SVGPath content="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" scaleX="1.2" scaleY="1.2" styleClass="icon-gray" />
-                                                        <TextField fx:id="txtUsername" promptText="admin" style="-fx-font-size: 14px;" styleClass="text-input" HBox.hgrow="ALWAYS">
+                                                        <TextField fx:id="txtUsername" promptText="username" style="-fx-font-size: 14px;" styleClass="text-input" HBox.hgrow="ALWAYS">
                                                             <HBox.margin>
                                                                 <Insets left="10.0" />
                                                             </HBox.margin>
@@ -106,7 +106,7 @@
                                             </children>
                                         </HBox>
 
-                                        <Button defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleLogin" style="-fx-font-size: 14px; -fx-padding: 12 20;" styleClass="btn-primary" text="BẮT ĐẦU LÀM VIỆC" />
+                                        <Button fx:id="btnLogin" defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleLogin" style="-fx-font-size: 14px; -fx-padding: 12 20;" styleClass="btn-primary" text="BẮT ĐẦU LÀM VIỆC" />
                                     </children>
                                     <padding>
                                         <Insets bottom="40.0" left="40.0" right="40.0" />
@@ -149,7 +149,8 @@
 
                                         <VBox spacing="10.0">
                                             <children>
-                                                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSendRequest" style="-fx-padding: 12 20;" styleClass="btn-secondary" text="GỬI YÊU CẦU" />
+                                                <Button fx:id="btnForgot" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSendRequest" style="-fx-padding: 12 20;" styleClass="btn-secondary" text="GỬI YÊU CẦU" />
+
                                                 <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showLoginForm" style="-fx-background-color: transparent; -fx-text-fill: #64748B; -fx-font-weight: bold; -fx-cursor: hand;" text="← QUAY LẠI ĐĂNG NHẬP" />
                                             </children>
                                         </VBox>
